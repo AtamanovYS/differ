@@ -20,5 +20,6 @@ function run(): void
 
     $args = \Docopt::handle($doc, []);
 
-    \Differ\Differ\genDiff($args['<firstFile>'], $args['<secondFile>'], $args['--format']);
+    $compareResult = \Differ\Differ\genDiff($args['<firstFile>'], $args['<secondFile>'], $args['--format']);
+    print_r($compareResult);
 }
