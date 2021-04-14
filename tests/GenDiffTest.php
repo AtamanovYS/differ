@@ -8,7 +8,10 @@ use function Differ\Differ\genDiff;
 
 class GenDiffTest extends TestCase
 {
-    private const TEST_FILES_DIR = __DIR__ . DIRECTORY_SEPARATOR . 'fixtures' . DIRECTORY_SEPARATOR;
+    private function getFixturePath(string $filename): string
+    {
+        return __DIR__ . DIRECTORY_SEPARATOR . 'fixtures' . DIRECTORY_SEPARATOR . $filename;
+    }
 
     public function testGenDiffFlattJson(): void
     {
@@ -25,7 +28,7 @@ class GenDiffTest extends TestCase
 
         self::assertEquals(
             $expected,
-            genDiff(self::TEST_FILES_DIR . 'flatJson1.json', self::TEST_FILES_DIR . 'flatJson2.json')
+            genDiff($this->getFixturePath('flatJson1.json'), $this->getFixturePath('flatJson2.json'))
         );
     }
 }
