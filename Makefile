@@ -13,6 +13,6 @@ stan:
 test:
 	composer run-script test
 test-coverage:
-	composer run-script test -- --coverage-clover build/logs/clover.xml
+	composer run-script test-coverage
 pushAll:
 	git add -A; git commit -m '$(m)'; git push

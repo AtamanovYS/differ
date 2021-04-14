@@ -37,6 +37,9 @@
     "scripts": {
         "phpcs": "phpcs",
         "phpstan": "phpstan analyse -c ./phpstan.neon",
-        "test": ["@putenv XDEBUG_MODE=coverage", "phpunit tests"]
+        "test": "phpunit tests",
+        "test-coverage": [
+            "@putenv XDEBUG_MODE=coverage",
+            "phpunit --coverage-clover build/logs/clover.xml tests"]
     }
 }
