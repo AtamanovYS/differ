@@ -38,7 +38,7 @@ function processFile(string $pathToFile): array
 function getAbsolutePathToFile(string $path): string
 {
     $baseDir = php_sapi_name() === 'cli' ? getcwd() : __DIR__;
-    return Path::makeAbsolute($path, $baseDir);
+    return Path::makeAbsolute($path, (string) $baseDir);
 }
 
 function compare(array $data1, array $data2): array
@@ -61,7 +61,10 @@ function compare(array $data1, array $data2): array
             $newElem['label'] = $thisOldElem ? '-' : '+';
 
             if (!$thisOldElem && some($comparableData, fn ($item) => $item['key'] === $keyWithoutPrefix)) {
-                $indexOldElem = first_index_of($comparableData, fn ($item) => $item['key'] === $keyWithoutPrefix ? $item : null);
+                $indexOldElem = first_index_of(
+                    $comparableData,
+                    fn ($item) => $item['key'] === $keyWithoutPrefix ? $item : null
+                );
                 if ($comparableData[$indexOldElem]['value'] === $newElem['value']) {
                     $comparableData[$indexOldElem]['label'] = ' ';
                     return $comparableData;
