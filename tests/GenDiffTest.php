@@ -8,7 +8,7 @@ use function Differ\Differ\genDiff;
 
 class GenDiffTest extends TestCase
 {
-    const TEST_FILES_DIR = __DIR__ . DIRECTORY_SEPARATOR . 'fixtures' . DIRECTORY_SEPARATOR;
+    private const TEST_FILES_DIR = __DIR__ . DIRECTORY_SEPARATOR . 'fixtures' . DIRECTORY_SEPARATOR;
 
     public function testGenDiffFlattJson(): void
     {
