@@ -5,7 +5,3 @@ parameters:
     - src
     - tests
   checkMissingIterableValueType: false
-  ignoreErrors:
-    -
-      message: '#Parameter \#1 \$json of function json_decode expects string, string\|false given.#'
-      path: src/Differ.php
