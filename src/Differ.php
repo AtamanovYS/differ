@@ -4,8 +4,7 @@ namespace Differ\Differ;
 
 use Webmozart\PathUtil\Path;
 
-use function Functional\reindex;
-use function Functional\first_index_of;
+use function Functional\{reindex, first_index_of, sort};
 use function Funct\Strings\chompRight;
 use function Funct\Collection\some;
 
@@ -20,13 +19,13 @@ function genDiff(string $pathToFile1, string $pathToFile2, string $format = 'sty
 function processFile(string $pathToFile): array
 {
     $absolutePathToFile = getAbsolutePathToFile($pathToFile);
-    $fileContent = file_get_contents($absolutePathToFile);
+    $fileContent = @file_get_contents($absolutePathToFile);
 
     if ($fileContent === false) {
         throw new \Exception("file {$absolutePathToFile} doesn't exist or doesn't available");
     }
 
-    $jsonData = json_decode($fileContent, true);
+    $jsonData = @json_decode($fileContent, true);
     if ($jsonData === null) {
         throw new \Exception("file {$absolutePathToFile} cannot be decoded to JSON or it has high level of nesting");
     }
@@ -50,19 +49,20 @@ function compare(array $data1, array $data2): array
         function ($comparableData, $key) use ($combinedData, $postfixForNewKeys) {
 
             $value = $combinedData[$key];
-            $keyWithoutPrefix = chompRight($key, $postfixForNewKeys);
-            $thisOldElem = $keyWithoutPrefix === $key;
+            $keyWithoutPostfix = chompRight($key, $postfixForNewKeys);
+            $thisOldElem = $keyWithoutPostfix === $key;
 
             $newElem = [];
-            $newElem['key'] = $keyWithoutPrefix;
+            $newElem['key'] = $keyWithoutPostfix;
             $newElem['value'] = $value;
-            $newElem['printedValue'] = gettype($value) === 'string' ? $value : var_export($value, true);
+            $newElem['printableValue'] = gettype($value) === 'string' ? $value : var_export($value, true);
             $newElem['label'] = $thisOldElem ? '-' : '+';
+            $newElem['labelValue'] = $thisOldElem ? 0 : 1;
 
-            if (!$thisOldElem && some($comparableData, fn ($item) => $item['key'] === $keyWithoutPrefix)) {
+            if (!$thisOldElem && some($comparableData, fn ($item) => $item['key'] === $newElem['key'])) {
                 $indexOldElem = first_index_of(
                     $comparableData,
-                    fn ($item) => $item['key'] === $keyWithoutPrefix ? $item : null
+                    fn ($item) => $item['key'] === $newElem['key'] ? $item : null
                 );
                 if ($comparableData[$indexOldElem]['value'] === $newElem['value']) {
                     $comparableData[$indexOldElem]['label'] = ' ';
@@ -70,13 +70,17 @@ function compare(array $data1, array $data2): array
                 }
             }
 
-            $comparableData[$key] = $newElem;
+            $comparableData[] = $newElem;
             return $comparableData;
         },
         []
     );
-    ksort($comparableData);
-    return $comparableData;
+    return sort(
+        $comparableData,
+        fn ($left, $right, $comparableData) => $left['key'] === $right['key'] ?
+                                               $left['labelValue'] <=> $right['labelValue'] :
+                                               $left['key'] <=> $right['key']
+    );
 }
 
 function comparableDataToString(array $comparableData): string
@@ -84,7 +88,7 @@ function comparableDataToString(array $comparableData): string
     return array_reduce(
         $comparableData,
         function ($res, $item): string {
-            ['label' => $label, 'key' => $key, 'printedValue' => $value] = $item;
+            ['label' => $label, 'key' => $key, 'printableValue' => $value] = $item;
             $res .= "\n  {$label} {$key}: $value";
             return $res;
         },

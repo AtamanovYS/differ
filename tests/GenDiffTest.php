@@ -28,7 +28,19 @@ class GenDiffTest extends TestCase
 
         self::assertEquals(
             $expected,
-            genDiff($this->getFixturePath('flatJson1.json'), $this->getFixturePath('flatJson2.json'))
+            genDiff($this->getFixturePath('flat1.json'), $this->getFixturePath('flat2.json'))
         );
+    }
+
+    public function testExceptionUnknownFile(): void
+    {
+        $this->expectExceptionMessage("doesn't exist or doesn't available");
+        genDiff($this->getFixturePath('unknownFile.json'), $this->getFixturePath('flat2.json'));
+    }
+
+    public function testExceptionsWrongJson(): void
+    {
+        $this->expectExceptionMessage("cannot be decoded to JSON or it has high level of nesting");
+        genDiff($this->getFixturePath('wrong.json'), $this->getFixturePath('flat2.json'));
     }
 }
