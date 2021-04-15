@@ -6,7 +6,6 @@ use Webmozart\PathUtil\Path;
 
 use function Functional\reindex;
 use function Functional\first_index_of;
-use function Functional\group;
 use function Funct\Strings\chompRight;
 use function Funct\Collection\some;
 
@@ -21,13 +20,13 @@ function genDiff(string $pathToFile1, string $pathToFile2, string $format = 'sty
 function processFile(string $pathToFile): array
 {
     $absolutePathToFile = getAbsolutePathToFile($pathToFile);
-    $file1IsReadable = is_readable($absolutePathToFile);
+    $fileContent = file_get_contents($absolutePathToFile);
 
-    if (!$file1IsReadable) {
+    if ($fileContent === false) {
         throw new \Exception("file {$absolutePathToFile} doesn't exist or doesn't available");
     }
 
-    $jsonData = json_decode(file_get_contents($absolutePathToFile), true);
+    $jsonData = json_decode($fileContent, true);
     if ($jsonData === null) {
         throw new \Exception("file {$absolutePathToFile} cannot be decoded to JSON or it has high level of nesting");
     }
