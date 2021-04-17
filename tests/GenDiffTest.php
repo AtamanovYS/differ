@@ -8,14 +8,12 @@ use function Differ\Differ\genDiff;
 
 class GenDiffTest extends TestCase
 {
-    private function getFixturePath(string $filename): string
-    {
-        return __DIR__ . DIRECTORY_SEPARATOR . 'fixtures' . DIRECTORY_SEPARATOR . $filename;
-    }
+    private string $exptectedFlat;
+    private string $exptectedComplex;
 
-    public function testGenDiffFlattJson(): void
+    protected function setUp(): void
     {
-        $expected = <<<RES
+        $this->exptectedFlat = <<<RES
         {
           - follow: false
             host: hexlet.io
@@ -25,11 +23,39 @@ class GenDiffTest extends TestCase
           + verbose: true
         }
         RES;
+    }
 
+    private function getFixturePath(string $filename): string
+    {
+        return __DIR__ . DIRECTORY_SEPARATOR . 'fixtures' . DIRECTORY_SEPARATOR . $filename;
+    }
+
+    public function testGenDiffFlattJson(): void
+    {
         self::assertEquals(
-            $expected,
+            $this->exptectedFlat,
             genDiff($this->getFixturePath('flat1.json'), $this->getFixturePath('flat2.json'))
         );
+    }
+
+    public function testGenDiffFlattYml(): void
+    {
+        self::assertEquals(
+            $this->exptectedFlat,
+            genDiff($this->getFixturePath('flat1.yml'), $this->getFixturePath('flat2.yaml'))
+        );
+    }
+
+    public function testExceptionNoExtensionInFile(): void
+    {
+        $this->expectExceptionMessage("No extension found in file");
+        genDiff($this->getFixturePath('withoutExtension'), $this->getFixturePath('flat2.json'));
+    }
+
+    public function testExceptionUnknownExtension(): void
+    {
+        $this->expectExceptionMessage("Unknown extension");
+        genDiff($this->getFixturePath('unknownExtension.undefined'), $this->getFixturePath('flat2.json'));
     }
 
     public function testExceptionUnknownFile(): void
@@ -40,7 +66,7 @@ class GenDiffTest extends TestCase
 
     public function testExceptionsWrongJson(): void
     {
-        $this->expectExceptionMessage("cannot be decoded to JSON or it has high level of nesting");
+        $this->expectExceptionMessage("cannot be decoded to Json");
         genDiff($this->getFixturePath('wrong.json'), $this->getFixturePath('flat2.json'));
     }
 }

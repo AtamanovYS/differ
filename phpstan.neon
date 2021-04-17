@@ -5,3 +5,7 @@ parameters:
     - src
     - tests
   checkMissingIterableValueType: false
+  ignoreErrors:
+    -
+      message: '#Trying to invoke string but it might not be a callable.#'
+      path: src/Parsers.php

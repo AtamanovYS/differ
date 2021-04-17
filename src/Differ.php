@@ -2,8 +2,7 @@
 
 namespace Differ\Differ;
 
-use Webmozart\PathUtil\Path;
-
+use function Differ\Parsers\processFile;
 use function Functional\{reindex, first_index_of, sort};
 use function Funct\Strings\chompRight;
 use function Funct\Collection\some;
@@ -14,29 +13,6 @@ function genDiff(string $pathToFile1, string $pathToFile2, string $format = 'sty
     $dataFile2 = processFile($pathToFile2);
     $comparableData = compare($dataFile1, $dataFile2);
     return comparableDataToString($comparableData);
-}
-
-function processFile(string $pathToFile): array
-{
-    $absolutePathToFile = getAbsolutePathToFile($pathToFile);
-    $fileContent = @file_get_contents($absolutePathToFile);
-
-    if ($fileContent === false) {
-        throw new \Exception("file {$absolutePathToFile} doesn't exist or doesn't available");
-    }
-
-    $jsonData = @json_decode($fileContent, true);
-    if ($jsonData === null) {
-        throw new \Exception("file {$absolutePathToFile} cannot be decoded to JSON or it has high level of nesting");
-    }
-
-    return $jsonData;
-}
-
-function getAbsolutePathToFile(string $path): string
-{
-    $baseDir = php_sapi_name() === 'cli' ? getcwd() : __DIR__;
-    return Path::makeAbsolute($path, (string) $baseDir);
 }
 
 function compare(array $data1, array $data2): array
@@ -75,6 +51,7 @@ function compare(array $data1, array $data2): array
         },
         []
     );
+
     return sort(
         $comparableData,
         fn ($left, $right, $comparableData) => $left['key'] === $right['key'] ?
