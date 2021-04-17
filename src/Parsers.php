@@ -5,7 +5,7 @@ namespace Differ\Parsers;
 use Webmozart\PathUtil\Path;
 use Symfony\Component\Yaml\Yaml;
 
-function processFile(string $pathToFile): array
+function processFile(string $pathToFile): object
 {
     $absolutePathToFile = getAbsolutePathToFile($pathToFile);
     $parser = getParser($absolutePathToFile);
@@ -52,9 +52,9 @@ function getContentInFile(string $pathToFile): string
     return $fileContent;
 }
 
-function parseJson(string $content, string $absolutePathToFile): array
+function parseJson(string $content, string $absolutePathToFile): object
 {
-    $jsonData = json_decode($content, true);
+    $jsonData = json_decode($content, false);
 
     if ($jsonData === null) {
         throw new \Exception("file {$absolutePathToFile} cannot be decoded to Json");
@@ -63,7 +63,7 @@ function parseJson(string $content, string $absolutePathToFile): array
     return $jsonData;
 }
 
-function parseYml(string $content): array
+function parseYml(string $content): object
 {
-    return Yaml::parse($content);
+    return Yaml::parse($content, Yaml::PARSE_OBJECT_FOR_MAP);
 }
