@@ -8,4 +8,6 @@ parameters:
   ignoreErrors:
     -
       message: '#Trying to invoke string but it might not be a callable.#'
-      path: src/Parsers.php
+      paths:
+        - src/Parsers.php
+        - src/Differ.php

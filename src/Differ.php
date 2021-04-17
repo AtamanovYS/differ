@@ -109,13 +109,16 @@ function getPresentationStylish(array $data, int $indent = 2): string
 
 /**
 * @param bool|int|string|null $value
+* @return string
 **/
 function getValuePresentation($value): string
 {
     $type = gettype($value);
     switch ($type) {
         case 'string':
-            return $value;
+            // Приведение к string - костыль для прохождения тестов
+            // Он считает, что может вернуться тут другой тип, хотя выше проверка на тип string
+            return (string) $value;
         case 'NULL':
             return 'null';
         case 'boolean':
