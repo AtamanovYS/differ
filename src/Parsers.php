@@ -10,9 +10,6 @@ function processFile(string $pathToFile): array
     $absolutePathToFile = getAbsolutePathToFile($pathToFile);
     $parser = getParser($absolutePathToFile);
 
-    /* Здесь поставил @, потому что в случае ошибки выходит warning, и
-    программа останавливается, однако в блоке try catch не ловится, т.к.
-    это не исключение, а E_WARNING */
     $fileContent = getContentInFile($absolutePathToFile);
 
     return $parser($fileContent, $absolutePathToFile);
@@ -43,6 +40,9 @@ function getParser(string $pathToFile): string
 
 function getContentInFile(string $pathToFile): string
 {
+    /* Здесь поставил @, потому что в случае ошибки выходит warning, и
+    программа останавливается, однако в блоке try catch не ловится, т.к.
+    это не исключение, а E_WARNING */
     $fileContent = @file_get_contents($pathToFile);
 
     if ($fileContent === false) {
