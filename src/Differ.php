@@ -109,7 +109,6 @@ function getPresentationStylish(array $data, int $indent = 2): string
 
 /**
 * @param bool|int|string|null $value
-* @return string
 **/
 function getValuePresentation($value): string
 {
