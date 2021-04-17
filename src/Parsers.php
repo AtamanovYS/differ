@@ -65,5 +65,5 @@ function parseJson(string $content, string $absolutePathToFile): array
 
 function parseYml(string $content): array
 {
-    return Yaml::parse($content, Yaml::PARSE_OBJECT_FOR_MAP);
+    return Yaml::parse($content);
 }
