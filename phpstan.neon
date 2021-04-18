@@ -14,3 +14,9 @@ parameters:
     -
       message: '#Function Differ\\Formatters\\Stylish\\getValuePresentation\(\) should return string but returns bool\|int\|string\|null.#'
       path: src/Formatters/Stylish.php
+    -
+      message: '#Function Differ\\Formatters\\Json\\getPresentation\(\) should return string but returns string\|false.#'
+      path: src/Formatters/Json.php
+    -
+      message: '#Property Differ\\Tests\\GenDiffTest::\$expectedJson \(string\) does not accept string\|false.#'
+      path: tests/GenDiffTest.php

@@ -10,6 +10,7 @@ class GenDiffTest extends TestCase
 {
     private string $exptectedStylish;
     private string $expectedPlain;
+    private string $expectedJson;
 
     protected function setUp(): void
     {
@@ -73,6 +74,87 @@ class GenDiffTest extends TestCase
         Property 'group2' was removed
         Property 'group3' was added with value: [complex value]
         RES;
+
+        $expectedJson = <<<RES
+        [
+           {
+              "status":"add",
+              "value":false,
+              "path":"/common/follow"
+           },
+           {
+              "status":"remove",
+              "path":"/common/setting2"
+           },
+           {
+              "status":"replace",
+              "prevValue":true,
+              "path":"/common/setting3",
+              "value":null
+           },
+           {
+              "status":"add",
+              "value":"blah blah",
+              "path":"/common/setting4"
+           },
+           {
+              "status":"add",
+              "value":{
+                 "key5":"value5"
+              },
+              "path":"/common/setting5"
+           },
+           {
+              "status":"replace",
+              "prevValue":"",
+              "path":"/common/setting6/doge/wow",
+              "value":"so much"
+           },
+           {
+              "status":"add",
+              "value":"vops",
+              "path":"/common/setting6/ops"
+           },
+           {
+              "status":"replace",
+              "prevValue":"bas",
+              "path":"/group1/baz",
+              "value":"bars"
+              
+           },
+           {
+              "status":"replace",
+              "prevValue":{
+                "key":"value"
+             },
+              "path":"/group1/nest",
+              "value":"str"
+           },
+           {
+              "status":"remove",
+              "path":"/group2"
+           },
+           {
+              "status":"add",
+              "value":{
+                 "deep":{
+                    "id":{
+                       "number":45
+                    }
+                 },
+                 "fee":100500
+              },
+              "path":"/group3"
+           }
+        ]
+        RES;
+
+        $expectedJson = json_decode($expectedJson, false);
+        if ($expectedJson === null) {
+            throw new \Exception('$expectedJson cannot be decoded to Json');
+        }
+
+        $this->expectedJson = json_encode($expectedJson, JSON_UNESCAPED_SLASHES);
     }
 
     private function getFixturePath(string $filename): string
@@ -113,6 +195,24 @@ class GenDiffTest extends TestCase
         self::assertEquals(
             $this->expectedPlain,
             genDiff($this->getFixturePath('data1.json'), $this->getFixturePath('data2.yaml'), 'plain')
+        );
+    }
+
+    public function testGenDiffJson(): void
+    {
+        self::assertEquals(
+            $this->expectedJson,
+            genDiff($this->getFixturePath('data1.json'), $this->getFixturePath('data2.json'), 'json')
+        );
+
+        self::assertEquals(
+            $this->expectedJson,
+            genDiff($this->getFixturePath('data1.yml'), $this->getFixturePath('data2.yaml'), 'json')
+        );
+
+        self::assertEquals(
+            $this->expectedJson,
+            genDiff($this->getFixturePath('data1.json'), $this->getFixturePath('data2.yaml'), 'json')
         );
     }
 
