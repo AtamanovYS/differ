@@ -10,4 +10,10 @@ parameters:
       message: '#Trying to invoke string but it might not be a callable.#'
       paths:
         - src/Parsers.php
-        - src/Differ.php
+        - src/Formatters.php
+    -
+      message: '#Function Differ\\Formatters\\Stylish\\getValuePresentation\(\) should return string but returns bool\|int\|string\|null.#'
+      path: src/Formatters/Stylish.php
+    -
+      message: '#Function Differ\\Formatters\\Plain\\getValuePresentation\(\) should return string but return statement is missing.#'
+      path: src/Formatters/Plain.php

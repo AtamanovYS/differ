@@ -8,23 +8,12 @@ use function Differ\Differ\genDiff;
 
 class GenDiffTest extends TestCase
 {
-    private string $exptectedFlat;
-    private string $exptectedComplex;
+    private string $exptectedStylish;
+    private string $expectedPlain;
 
     protected function setUp(): void
     {
-        $this->exptectedFlat = <<<RES
-        {
-          - follow: false
-            host: hexlet.io
-          - proxy: 123.234.53.22
-          - timeout: 50
-          + timeout: 20
-          + verbose: true
-        }
-        RES;
-
-        $this->exptectedComplex = <<<RES
+        $this->exptectedStylish = <<<RES
         {
             common: {
               + follow: false
@@ -70,6 +59,20 @@ class GenDiffTest extends TestCase
             }
         }
         RES;
+
+        $this->expectedPlain = <<<RES
+        Property 'common.follow' was added with value: false
+        Property 'common.setting2' was removed
+        Property 'common.setting3' was updated. From true to null
+        Property 'common.setting4' was added with value: 'blah blah'
+        Property 'common.setting5' was added with value: [complex value]
+        Property 'common.setting6.doge.wow' was updated. From '' to 'so much'
+        Property 'common.setting6.ops' was added with value: 'vops'
+        Property 'group1.baz' was updated. From 'bas' to 'bars'
+        Property 'group1.nest' was updated. From [complex value] to 'str'
+        Property 'group2' was removed
+        Property 'group3' was added with value: [complex value]
+        RES;
     }
 
     private function getFixturePath(string $filename): string
@@ -77,57 +80,69 @@ class GenDiffTest extends TestCase
         return __DIR__ . DIRECTORY_SEPARATOR . 'fixtures' . DIRECTORY_SEPARATOR . $filename;
     }
 
-    public function testGenDiffFlattJson(): void
+    public function testGenDiffStylish(): void
     {
         self::assertEquals(
-            $this->exptectedFlat,
-            genDiff($this->getFixturePath('flat1.json'), $this->getFixturePath('flat2.json'))
+            $this->exptectedStylish,
+            genDiff($this->getFixturePath('data1.json'), $this->getFixturePath('data2.json'), 'stylish')
+        );
+
+        self::assertEquals(
+            $this->exptectedStylish,
+            genDiff($this->getFixturePath('data1.yml'), $this->getFixturePath('data2.yaml'), 'stylish')
+        );
+
+        self::assertEquals(
+            $this->exptectedStylish,
+            genDiff($this->getFixturePath('data1.json'), $this->getFixturePath('data2.yaml'), 'stylish')
         );
     }
 
-    public function testGenDiffComplexJson(): void
+    public function testGenDiffPlain(): void
     {
         self::assertEquals(
-            $this->exptectedComplex,
-            genDiff($this->getFixturePath('complex1.json'), $this->getFixturePath('complex2.json'))
+            $this->expectedPlain,
+            genDiff($this->getFixturePath('data1.json'), $this->getFixturePath('data2.json'), 'plain')
+        );
+
+        self::assertEquals(
+            $this->expectedPlain,
+            genDiff($this->getFixturePath('data1.yml'), $this->getFixturePath('data2.yaml'), 'plain')
+        );
+
+        self::assertEquals(
+            $this->expectedPlain,
+            genDiff($this->getFixturePath('data1.json'), $this->getFixturePath('data2.yaml'), 'plain')
         );
     }
 
-    public function testGenDiffFlattYml(): void
-    {
-        self::assertEquals(
-            $this->exptectedFlat,
-            genDiff($this->getFixturePath('flat1.yml'), $this->getFixturePath('flat2.yaml'))
-        );
-    }
-
-    public function testExceptionNoExtensionInFile(): void
+    public function testGenDiffExceptionNoExtensionInFile(): void
     {
         $this->expectExceptionMessage("No extension found in file");
-        genDiff($this->getFixturePath('withoutExtension'), $this->getFixturePath('flat2.json'));
+        genDiff($this->getFixturePath('withoutExtension'), $this->getFixturePath('data2.json'));
     }
 
-    public function testExceptionUnknownExtension(): void
+    public function testGenDiffExceptionUnknownExtension(): void
     {
         $this->expectExceptionMessage("Unknown extension");
-        genDiff($this->getFixturePath('unknownExtension.undefined'), $this->getFixturePath('flat2.json'));
+        genDiff($this->getFixturePath('unknownExtension.undefined'), $this->getFixturePath('data2.json'));
     }
 
-    public function testExceptionUnknownFile(): void
+    public function testGenDiffExceptionUnknownFile(): void
     {
         $this->expectExceptionMessage("doesn't exist or doesn't available");
-        genDiff($this->getFixturePath('unknownFile.json'), $this->getFixturePath('flat2.json'));
+        genDiff($this->getFixturePath('unknownFile.json'), $this->getFixturePath('data2.json'));
     }
 
-    public function testExceptionsWrongJson(): void
+    public function testGenDiffExceptionsWrongJson(): void
     {
         $this->expectExceptionMessage("cannot be decoded to Json");
-        genDiff($this->getFixturePath('wrong.json'), $this->getFixturePath('flat2.json'));
+        genDiff($this->getFixturePath('wrong.json'), $this->getFixturePath('data2.json'));
     }
 
-    public function testExceptionsUknownValueType(): void
+    public function testGenDiffExceptionsUknownValueTypeStylish(): void
     {
-        $this->expectExceptionMessage("Undefined presentation for value type");
-        genDiff($this->getFixturePath('complex1WithArray.json'), $this->getFixturePath('flat2.json'));
+        $this->expectExceptionMessage("Undefined presentation in stylish format for value type");
+        genDiff($this->getFixturePath('withArray.json'), $this->getFixturePath('data2.json'), 'stylish');
     }
 }

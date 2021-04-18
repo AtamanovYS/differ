@@ -9,9 +9,7 @@ function processFile(string $pathToFile): object
 {
     $absolutePathToFile = getAbsolutePathToFile($pathToFile);
     $parser = getParser($absolutePathToFile);
-
     $fileContent = getContentInFile($absolutePathToFile);
-
     return $parser($fileContent, $absolutePathToFile);
 }
 
@@ -30,7 +28,7 @@ function getParser(string $pathToFile): string
         throw new \Exception("No extension found in file {$pathToFile}");
     }
 
-    $parser = __NAMESPACE__ . '\parse' . ucfirst($extension === 'yaml' ? 'yml' : $extension);
+    $parser = __NAMESPACE__ . '\\parse' . ucfirst($extension === 'yaml' ? 'yml' : $extension);
     if (!function_exists($parser)) {
         throw new \Exception("Unknown extension {$extension} in file {$pathToFile}");
     }
