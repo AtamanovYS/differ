@@ -2,7 +2,7 @@
 
 namespace Differ\Formatters;
 
-function getPresentation(array $data, string $format, int $indent = 4): string
+function getPresentation(array $data, string $format): string
 {
     $getPresent = __NAMESPACE__ . '\\' . ucfirst($format) . '\\getPresentation';
 

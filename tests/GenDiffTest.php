@@ -145,4 +145,10 @@ class GenDiffTest extends TestCase
         $this->expectExceptionMessage("Undefined presentation in stylish format for value type");
         genDiff($this->getFixturePath('withArray.json'), $this->getFixturePath('data2.json'), 'stylish');
     }
+
+    public function testGenDiffExceptionsUknownPresentationFormat(): void
+    {
+        $this->expectExceptionMessage("Unknown presentation format");
+        genDiff($this->getFixturePath('data1.json'), $this->getFixturePath('data2.json'), 'unknownFormat');
+    }
 }

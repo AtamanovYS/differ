@@ -14,6 +14,3 @@ parameters:
     -
       message: '#Function Differ\\Formatters\\Stylish\\getValuePresentation\(\) should return string but returns bool\|int\|string\|null.#'
       path: src/Formatters/Stylish.php
-    -
-      message: '#Function Differ\\Formatters\\Plain\\getValuePresentation\(\) should return string but return statement is missing.#'
-      path: src/Formatters/Plain.php

@@ -62,9 +62,7 @@ function getValuePresentation($value): string
         case 'integer':
         case 'string':
             return var_export($value, true);
-        case 'array':
+        default:
             return '[complex value]';
     }
-    // Здесь нет ветки default, т.к. указаны все возможные типы данных json,
-    // (еще может быть тип object, но здесь в поле value все объекты преобразованы в массивы)
 }
