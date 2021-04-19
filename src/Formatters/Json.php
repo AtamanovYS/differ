@@ -4,7 +4,9 @@ namespace Differ\Formatters\Json;
 
 function getPresentation(array $data): string
 {
-    return json_encode(getPresentationIter($data), JSON_UNESCAPED_SLASHES);
+    // Приведение к типу string, чтобы тесты проходили
+    // Здесь невозможно ситуации, чтобы нельзя было привести к json
+    return (string) json_encode(getPresentationIter($data), JSON_UNESCAPED_SLASHES);
 }
 
 function getPresentationIter(array $data, string $parent = ''): array

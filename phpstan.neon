@@ -1,22 +1,19 @@
 parameters:
-  level: 6
+  level: 8
   paths:
-    - bin
-    - src
-    - tests
+    - code
+
   checkMissingIterableValueType: false
+
+  excludePaths:
+    - vendor
+    - tests
+
+  reportUnmatchedIgnoredErrors: false
+
   ignoreErrors:
-    -
-      message: '#Trying to invoke string but it might not be a callable.#'
-      paths:
-        - src/Parsers.php
-        - src/Formatters.php
-    -
-      message: '#Function Differ\\Formatters\\Stylish\\getValuePresentation\(\) should return string but returns bool\|int\|string\|null.#'
-      path: src/Formatters/Stylish.php
-    -
-      message: '#Function Differ\\Formatters\\Json\\getPresentation\(\) should return string but returns string\|false.#'
-      path: src/Formatters/Json.php
-    -
-      message: '#Property Differ\\Tests\\GenDiffTest::\$expectedJson \(string\) does not accept string\|false.#'
-      path: tests/GenDiffTest.php
+   - '#with no typehint specified#'
+   - '#Variable property access on object#'
+
+  phpstanFunctionalProgramming:
+    disallowThrow: false

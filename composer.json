@@ -22,11 +22,11 @@
         "phpstan/phpstan": "^0.12.83",
         "phpunit/phpunit": "^9.5",
         "phpstan/extension-installer": "^1.1",
-        "phpstan/phpstan-strict-rules": "^0.12.9"
+        "phpstan/phpstan-strict-rules": "^0.12.9",
+        "hexlet/phpstan-fp": "^1.1"
     },
     "autoload": {
         "files": [
-            "src/Cli.php",
             "src/Differ.php",
             "src/Parsers.php",
             "src/Formatters.php",

@@ -4,8 +4,5 @@
     <include>
       <directory suffix=".php">./src</directory>
     </include>
-    <exclude>
-      <file>./src/Cli.php</file>
-    </exclude>
   </coverage>
 </phpunit>

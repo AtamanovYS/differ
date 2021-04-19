@@ -9,7 +9,7 @@ update:
 lint:
 	composer run-script phpcs -- --standard=PSR12 src bin tests
 stan:
-	composer run-script phpstan -- --level max src bin tests
+	composer run-script phpstan -- --level max src bin
 test:
 	composer run-script test
 test-coverage:

@@ -5,4 +5,20 @@ namespace Differ;
 
 require __DIR__ . '/../vendor/autoload.php';
 
-Cli\run();
+$doc = <<<DOC
+Generate diff
+
+Usage:
+  gendiff (-h|--help)
+  gendiff (-v|--version)
+  gendiff [--format <fmt>] <firstFile> <secondFile>
+
+Options:
+  -h --help                     Show this screen
+  -v --version                  Show version
+  --format <fmt>                Report format [default: stylish]
+DOC;
+
+$args = \Docopt::handle($doc, []);
+
+print_r(Differ\genDiff($args['<firstFile>'], $args['<secondFile>'], $args['--format']));

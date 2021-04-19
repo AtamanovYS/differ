@@ -4,9 +4,7 @@ namespace Differ\Differ;
 
 use function Differ\Parsers\processFile;
 use function Differ\Formatters\getPresentation;
-use function Functional\{reindex, first_index_of, sort};
-use function Funct\Strings\chompRight;
-use function Funct\Collection\some;
+use function Functional\sort;
 
 function genDiff(string $pathToFile1, string $pathToFile2, string $format = 'stylish'): string
 {
@@ -16,68 +14,72 @@ function genDiff(string $pathToFile1, string $pathToFile2, string $format = 'sty
     return getPresentation($comparableData, $format);
 }
 
-function compare(object $data1, ?object $data2 = null): array
+function compare(object $data1, object $data2): array
 {
-    $thisUniqParent = $data2 === null ? true : false;
-    if ($data2 === null) {
-        $data2 = new \stdClass();
-    }
+    $compareIter = function (object $data1, object $data2, ?int $constantLabel = null) use (&$compareIter): ?array {
+        $data1Array = get_object_vars($data1);
+        $data2Array = get_object_vars($data2);
 
-    $postfixForNewKeys = '_' . uniqid();
-    $combinedData = array_merge(
-        get_object_vars($data1),
-        reindex(get_object_vars($data2), fn($value, $key) => "{$key}$postfixForNewKeys")
-    );
+        if (count($data1Array) + count($data2Array) === 0) {
+            return null;
+        }
 
-    $comparableData = array_reduce(
-        array_keys($combinedData),
-        function ($comparableData, $key) use ($combinedData, $postfixForNewKeys, $thisUniqParent) {
+        $comparableData = array_map(
+            function (string $key) use ($data1Array, $data2Array, $compareIter, $constantLabel): array {
 
-            $value = $combinedData[$key];
-            $keyWithoutPostfix = chompRight($key, $postfixForNewKeys);
-            $thisOldElem = $keyWithoutPostfix === $key;
+                $processData = function (string $key, array $leadingArray, array $slaveArray, int $defaultLabel, ?int $constantLabel): ?array {
+                    if (!array_key_exists($key, $leadingArray)) {
+                        return null;
+                    }
 
-            $newElem = [];
-            $newElem['key'] = $keyWithoutPostfix;
-            $newElem['value'] = gettype($value) === 'object' ? compare($value) : $value;
-            $newElem['object'] = gettype($value) === 'object' ? $value : null;
-            $newElem['label'] = $thisUniqParent ? 0 : ($thisOldElem ? -1 : 1);
-            $newElem['updated'] = false;
+                    if ($constantLabel !== null) {
+                        $label = $constantLabel;
+                    } else {
+                        if (
+                            array_key_exists($key, $slaveArray) &&
+                            (gettype($leadingArray[$key]) === 'object' && gettype($slaveArray[$key]) === 'object' ||
+                            $leadingArray[$key] === $slaveArray[$key])
+                        ) {
+                            $label = 0;
+                        } else {
+                            $label = $defaultLabel;
+                        }
+                    }
 
-            if (!$thisOldElem && some($comparableData, fn ($item) => $item['key'] === $newElem['key'])) {
-                $indexOldElem = first_index_of(
-                    $comparableData,
-                    fn ($item) => $item['key'] === $newElem['key'] ? $item : null
-                );
+                    return [
+                        'value' => $leadingArray[$key],
+                        'label' => $label
+                    ];
+                };
 
-                if ($comparableData[$indexOldElem]['object'] !== null && $newElem['object'] !== null) {
-                    $comparableData[$indexOldElem]['value'] = compare(
-                        $comparableData[$indexOldElem]['object'],
-                        $newElem['object']
+                $oldData = $processData($key, $data1Array, $data2Array, -1, $constantLabel);
+                $newData = $processData($key, $data2Array, $data1Array, 1, $constantLabel);
+
+                if (
+                    $oldData !== null && $newData !== null &&
+                    gettype($oldData['value']) === 'object' && gettype($newData['value']) === 'object'
+                ) {
+                    $children = $compareIter($oldData['value'], $newData['value']);
+                } else {
+                    $children = $compareIter(
+                        $oldData !== null && gettype($oldData['value']) === 'object' ? $oldData['value'] : new \stdClass(),
+                        $newData !== null && gettype($newData['value']) === 'object' ? $newData['value'] : new \stdClass(),
+                        $oldData === null || $newData === null ? 0 : null
                     );
-                    $comparableData[$indexOldElem]['label'] = 0;
-                    return $comparableData;
                 }
 
-                if ($comparableData[$indexOldElem]['value'] === $newElem['value']) {
-                    $comparableData[$indexOldElem]['label'] = 0;
-                    return $comparableData;
-                }
+                return [
+                    'key' => $key,
+                    'oldData' => $oldData,
+                    'newData' => $newData,
+                    'children' => $children
+                ];
+            },
+            array_unique([...array_keys($data1Array), ...array_keys($data2Array)])
+        );
 
-                $newElem['updated'] = true;
-                $comparableData[$indexOldElem]['updated'] = true;
-            }
+        return sort($comparableData, fn ($left, $right) => $left['key'] <=> $right['key']);
+    };
 
-            $comparableData[] = $newElem;
-            return $comparableData;
-        },
-        []
-    );
-
-    return sort(
-        $comparableData,
-        fn ($left, $right) => $left['key'] === $right['key'] ?
-                                               $left['label'] <=> $right['label'] :
-                                               $left['key'] <=> $right['key']
-    );
+    return $compareIter($data1, $data2) ?? [];
 }

@@ -2,6 +2,7 @@
 
 namespace Differ\Parsers;
 
+use phpDocumentor\Reflection\Types\Callable_;
 use Webmozart\PathUtil\Path;
 use Symfony\Component\Yaml\Yaml;
 
@@ -10,6 +11,13 @@ function processFile(string $pathToFile): object
     $absolutePathToFile = getAbsolutePathToFile($pathToFile);
     $parser = getParser($absolutePathToFile);
     $fileContent = getContentInFile($absolutePathToFile);
+
+    // Костыль, чтоб тесты работали (проверка на is callable внутри функции уже есть,
+    // тут код дублирую, иначе тесты не проходят)
+    if (!is_callable($parser)) {
+        throw new \Exception("Unknown extension in file {$pathToFile}");
+    }
+
     return $parser($fileContent, $absolutePathToFile);
 }
 
@@ -29,7 +37,7 @@ function getParser(string $pathToFile): string
     }
 
     $parser = __NAMESPACE__ . '\\parse' . ucfirst($extension === 'yaml' ? 'yml' : $extension);
-    if (!function_exists($parser)) {
+    if (!is_callable($parser)) {
         throw new \Exception("Unknown extension {$extension} in file {$pathToFile}");
     }
 
