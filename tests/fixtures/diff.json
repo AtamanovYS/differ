@@ -6,13 +6,16 @@
    },
    {
       "status":"remove",
+      "prevValue":200,
       "path":"/common/setting2"
    },
    {
       "status":"replace",
+      "value":{
+         "key":"value"
+      },
       "prevValue":true,
-      "path":"/common/setting3",
-      "value":null
+      "path":"/common/setting3"
    },
    {
       "status":"add",
@@ -28,9 +31,9 @@
    },
    {
       "status":"replace",
-      "prevValue":"",
-      "path":"/common/setting6/doge/wow",
-      "value":"so much"
+      "value":"so much",
+      "prevValue":"too much",
+      "path":"/common/setting6/doge/wow"
    },
    {
       "status":"add",
@@ -39,20 +42,26 @@
    },
    {
       "status":"replace",
+      "value":"bars",
       "prevValue":"bas",
-      "path":"/group1/baz",
-      "value":"bars"
+      "path":"/group1/baz"
    },
    {
       "status":"replace",
+      "value":"str",
       "prevValue":{
          "key":"value"
       },
-      "path":"/group1/nest",
-      "value":"str"
+      "path":"/group1/nest"
    },
    {
       "status":"remove",
+      "prevValue":{
+         "abc":12345,
+         "deep":{
+            "id":45
+         }
+      },
       "path":"/group2"
    },
    {
@@ -66,5 +75,50 @@
          "fee":100500
       },
       "path":"/group3"
+   },
+   {
+      "status":"replace",
+      "value":"",
+      "prevValue":null,
+      "path":"/group4/default"
+   },
+   {
+      "status":"replace",
+      "value":null,
+      "prevValue":0,
+      "path":"/group4/foo"
+   },
+   {
+      "status":"replace",
+      "value":"none",
+      "prevValue":false,
+      "path":"/group4/isNested"
+   },
+   {
+      "status":"add",
+      "value":false,
+      "path":"/group4/key"
+   },
+   {
+      "status":"replace",
+      "value":0,
+      "prevValue":"",
+      "path":"/group4/nest/bar"
+   },
+   {
+      "status":"remove",
+      "prevValue":true,
+      "path":"/group4/nest/isNested"
+   },
+   {
+      "status":"add",
+      "value":true,
+      "path":"/group4/someKey"
+   },
+   {
+      "status":"replace",
+      "value":"bar",
+      "prevValue":"bas",
+      "path":"/group4/type"
    }
 ]

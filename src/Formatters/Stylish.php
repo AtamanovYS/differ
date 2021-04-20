@@ -2,63 +2,75 @@
 
 namespace Differ\Formatters\Stylish;
 
+use function Functional\{flat_map, flatten};
+
 function getPresentation(array $data): string
 {
-    $getPresentationIter = function (array $data, int $indent = 2) use (&$getPresentationIter): string {
-        return array_reduce(
+    $getPresentationIter = function (array $data, int $indent = 2) use (&$getPresentationIter): array {
+        return flat_map(
             $data,
-            function ($res, $item) use ($indent, $getPresentationIter): string {
+            function ($elem) use ($getPresentationIter, $indent): array {
 
-                $buildString = function (string $key, int $label, string $value, int $indent): string {
-                    $labelStr = $item['label'] < 0 ? '-' : ($item['label'] > 0 ? '+' : ' ');
-                    return "\n" . str_repeat(' ', $indent) . "{$labelStr} {$key}: $value";
+                $formElement = function (
+                    int $label,
+                    string $key,
+                    $value,
+                    ?array $children
+                ) use (
+                    $getPresentationIter,
+                    $indent
+                ): array {
+                    $labelPresentation = $label < 0 ? '-' : ($label > 0 ? '+' : ' ');
+                    $spaces = str_repeat(' ', $indent);
+                    if (gettype($value) === 'object') {
+                        // Здесь $children ?? [] поставил, чтобы тесты проходили
+                        // а так сюда null не попадает никогда
+                        // так как есть проверка gettype($value) === 'object', когда туда children передается
+                        // а в этом случае children точно заполнен
+                        $valuePresentation = $getPresentationIter($children ?? [], $indent + 4);
+                        $spacesEnd = str_repeat(' ', $indent + 2);
+                        return ["{$spaces}{$labelPresentation} {$key}: {" ,... $valuePresentation, "{$spacesEnd}}"];
+                    }
+
+                    $valuePresentation = getValuePresentation($value);
+                    return ["{$spaces}{$labelPresentation} {$key}: {$valuePresentation}"];
+                };
+
+                $bothValuesObjects = gettype($elem['oldData']['value'] ?? null) === 'object' &&
+                                     gettype($elem['newData']['value'] ?? null) === 'object';
+
+                if ($bothValuesObjects) {
+                    return $formElement(0, $elem['key'], $elem['oldData']['value'], $elem['children']);
                 }
 
-                $key = $item['key'];
-                if ($item['children'] !== null) {
-                    $valueChildren = $getPresentationIter($item['children'], $indent + 4);
-                } else {
-                    $value = getValuePresentation($item['value']);
-                }
-                
-
-                if ($item['oldData'] !== null) {
-                    $res .= "\n" . str_repeat(' ', $indent) . "{$label} {$key}: $value";
-                } else {
-                    $res .= "\n" . str_repeat(' ', $indent) . "{$label} {$key}: $value";
+                if (!is_null($elem['oldData'])) {
+                    $oldElem = $formElement(
+                        $elem['oldData']['label'],
+                        $elem['key'],
+                        $elem['oldData']['value'],
+                        $elem['children']
+                    );
                 }
 
-                $label = $item['label'] < 0 ? '-' : ($item['label'] > 0 ? '+' : ' ');
-                $res .= "\n" . str_repeat(' ', $indent) . "{$label} {$key}: $value";
-                return $res;
-            },
-            '{'
-        ) . "\n" . str_repeat(' ', $indent - 2) . '}';
+                if (!is_null($elem['newData'])) {
+                    $newElem = $formElement(
+                        $elem['newData']['label'],
+                        $elem['key'],
+                        $elem['newData']['value'],
+                        $elem['children']
+                    );
+                }
+
+                return array_unique(flatten([$oldElem ?? null, $newElem ?? null]));
+            }
+        );
     };
 
-    return $getPresentationIter($data);
-
+    return implode(
+        "\n",
+        ['{', ...array_filter($getPresentationIter($data), fn ($elem) => !is_null($elem)), '}']
+    );
 }
-
-/*
-function getPresentation(array $data, int $indent = 2): string
-{
-    return array_reduce(
-        $data,
-        function ($res, $item) use ($indent): string {
-            if ($item['object'] !== null) {
-                $value = getPresentation($item['value'], $indent + 4);
-            } else {
-                $value = getValuePresentation($item['value']);
-            }
-            $key = $item['key'];
-            $label = $item['label'] < 0 ? '-' : ($item['label'] > 0 ? '+' : ' ');
-            $res .= "\n" . str_repeat(' ', $indent) . "{$label} {$key}: $value";
-            return $res;
-        },
-        '{'
-    ) . "\n" . str_repeat(' ', $indent - 2) . '}';
-}*/
 
 /**
 * @param bool|int|string|null $value

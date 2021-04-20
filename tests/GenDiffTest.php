@@ -38,11 +38,6 @@ class GenDiffTest extends TestCase
             $this->exptectedStylish,
             genDiff($this->getFixturePath('file1.yml'), $this->getFixturePath('file2.yaml'), 'stylish')
         );
-
-        self::assertEquals(
-            $this->exptectedStylish,
-            genDiff($this->getFixturePath('file1.json'), $this->getFixturePath('file2.yaml'), 'stylish')
-        );
     }
 
     public function testGenDiffPlain(): void

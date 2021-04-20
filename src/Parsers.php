@@ -2,7 +2,6 @@
 
 namespace Differ\Parsers;
 
-use phpDocumentor\Reflection\Types\Callable_;
 use Webmozart\PathUtil\Path;
 use Symfony\Component\Yaml\Yaml;
 
@@ -12,7 +11,7 @@ function processFile(string $pathToFile): object
     $parser = getParser($absolutePathToFile);
     $fileContent = getContentInFile($absolutePathToFile);
 
-    // Костыль, чтоб тесты работали (проверка на is callable внутри функции уже есть,
+    // Костыль, чтоб тесты работали (проверка на is callable внутри функции getParser уже есть,
     // тут код дублирую, иначе тесты не проходят)
     if (!is_callable($parser)) {
         throw new \Exception("Unknown extension in file {$pathToFile}");
@@ -62,7 +61,7 @@ function parseJson(string $content, string $absolutePathToFile): object
 {
     $jsonData = json_decode($content, false);
 
-    if ($jsonData === null) {
+    if (is_null($jsonData)) {
         throw new \Exception("file {$absolutePathToFile} cannot be decoded to Json");
     }
 

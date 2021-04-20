@@ -27,12 +27,18 @@ function compare(object $data1, object $data2): array
         $comparableData = array_map(
             function (string $key) use ($data1Array, $data2Array, $compareIter, $constantLabel): array {
 
-                $processData = function (string $key, array $leadingArray, array $slaveArray, int $defaultLabel, ?int $constantLabel): ?array {
+                $processData = function (
+                    string $key,
+                    array $leadingArray,
+                    array $slaveArray,
+                    int $defaultLabel,
+                    ?int $constantLabel
+                ): ?array {
                     if (!array_key_exists($key, $leadingArray)) {
                         return null;
                     }
 
-                    if ($constantLabel !== null) {
+                    if (!is_null($constantLabel)) {
                         $label = $constantLabel;
                     } else {
                         if (
@@ -55,18 +61,13 @@ function compare(object $data1, object $data2): array
                 $oldData = $processData($key, $data1Array, $data2Array, -1, $constantLabel);
                 $newData = $processData($key, $data2Array, $data1Array, 1, $constantLabel);
 
-                if (
-                    $oldData !== null && $newData !== null &&
-                    gettype($oldData['value']) === 'object' && gettype($newData['value']) === 'object'
-                ) {
-                    $children = $compareIter($oldData['value'], $newData['value']);
-                } else {
-                    $children = $compareIter(
-                        $oldData !== null && gettype($oldData['value']) === 'object' ? $oldData['value'] : new \stdClass(),
-                        $newData !== null && gettype($newData['value']) === 'object' ? $newData['value'] : new \stdClass(),
-                        $oldData === null || $newData === null ? 0 : null
-                    );
-                }
+                $children = $compareIter(
+                    !is_null($oldData) && gettype($oldData['value']) === 'object' ? $oldData['value'] : new \stdClass(),
+                    !is_null($newData) && gettype($newData['value']) === 'object' ? $newData['value'] : new \stdClass(),
+                    gettype($oldData['value'] ?? null) !== 'object' || gettype($newData['value'] ?? null) !== 'object' ?
+                        0 :
+                        null
+                );
 
                 return [
                     'key' => $key,

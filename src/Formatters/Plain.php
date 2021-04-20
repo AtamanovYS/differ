@@ -2,51 +2,48 @@
 
 namespace Differ\Formatters\Plain;
 
-use function Funct\Strings\chompRight;
+use function Functional\flat_map;
 
-function getPresentation(array $data, string $parent = ''): string
+function getPresentation(array $data): string
 {
-    $res = array_reduce(
-        $data,
-        function ($res, $item) use ($parent): string {
-            $key = $item['key'];
-            $path = $parent === '' ? $key : "{$parent}.{$key}";
+    $getPresentationIter = function (array $data, string $parent = '') use (&$getPresentationIter): array {
+        return flat_map(
+            $data,
+            function ($elem) use ($getPresentationIter, $parent): array {
+                $key = $elem['key'];
+                $path = $parent === '' ? $key : "{$parent}.{$key}";
 
-            $updatedNestedStructure = $item['object'] !== null && $item['label'] === 0 ? true : false;
+                $beginString = "Property '{$path}' was ";
 
-            if ($updatedNestedStructure) {
-                $value = getPresentation($item['value'], $path);
-            } elseif ($item['label'] !== 0) {
-                $value = getValuePresentation($item['value']);
-            } else {
-                return $res;
-            }
-
-            if ($item['updated'] && $item['label'] === 1) {
-                $res .= "{$value}\n";
-            } elseif (!$updatedNestedStructure) {
-                $res .= "Property '{$path}' was ";
-                if ($item['updated']) {
-                    $res .= "updated. From {$value} to ";
-                } elseif ($item['label'] === -1) {
-                    $res .= "removed\n";
+                if (!(is_null($elem['oldData']) || is_null($elem['newData']))) {
+                    if ($elem['oldData']['label'] !== 0) {
+                        $oldValue = getValuePresentation($elem['oldData']['value']);
+                        $newValue = getValuePresentation($elem['newData']['value']);
+                        return ["{$beginString}updated. From {$oldValue} to {$newValue}"];
+                    } elseif (
+                        gettype($elem['oldData']['value']) === 'object' &&
+                        gettype($elem['newData']['value']) === 'object'
+                    ) {
+                        return $getPresentationIter($elem['children'], $path);
+                    } else {
+                        return [null];
+                    }
                 } else {
-                    $res .= "added with value: {$value}\n";
+                    if (!is_null($elem['oldData'])) {
+                        return ["{$beginString}removed"];
+                    } else {
+                        $newValue = getValuePresentation($elem['newData']['value']);
+                        return ["{$beginString}added with value: {$newValue}"];
+                    }
                 }
-            } else {
-                $res .= $value;
             }
-            return $res;
-        },
-        ''
+        );
+    };
+
+    return implode(
+        "\n",
+        array_filter($getPresentationIter($data), fn ($elem) => !is_null($elem))
     );
-
-    // Самый последний символ переноса строки не нужен
-    if ($parent === '') {
-        $res = chompRight($res, "\n");
-    }
-
-    return $res;
 }
 
 /**
