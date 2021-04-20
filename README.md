@@ -20,7 +20,7 @@ Utility features:
 * Support different input formats: yaml and json
 * Generating a report in plain text, stylish and json format
 
-Use ./bin/gendiff -h to get instructions how to use
+Use `./bin/gendiff -h` to get instructions how to use
 ```
 Generate diff
 
