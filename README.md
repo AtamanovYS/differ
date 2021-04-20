@@ -17,8 +17,8 @@ $ make install
 
 Differ shows the difference between two data structures.
 Utility features:
-⋅⋅*Support for different input formats: yaml and json
-⋅⋅*Generating a report in plain text, stylish and json format
+* Support different input formats: yaml and json
+* Generating a report in plain text, stylish and json format
 
 Use ./bin/gendiff -h to get instructions how to use
 ```
@@ -38,16 +38,16 @@ Options:
 ## Examples
 
 Comparing flat json files in stylish format
-[![asciicast](https://asciinema.org/a/SeFljsEr6fFLvsDw7TOkTTCH5.svg)](https://asciinema.org/a/SeFljsEr6fFLvsDw7TOkTTCH5)
+[![asciicast](https://asciinema.org/a/LUGeCy0bxKqb0k20uXPyPSYlq.svg)](https://asciinema.org/a/LUGeCy0bxKqb0k20uXPyPSYlq)
 
 Comparing flat yml files in stylish format
-[![asciicast](https://asciinema.org/a/quy8Wk0XG6qnqJmyz3mZFgjNU.svg)](https://asciinema.org/a/quy8Wk0XG6qnqJmyz3mZFgjNU)
+[![asciicast](https://asciinema.org/a/V70C575Xehd7c8NR75zjt3f30.svg)](https://asciinema.org/a/V70C575Xehd7c8NR75zjt3f30)
 
 Comparing files with nested structures in stylish format
-[![asciicast](https://asciinema.org/a/bapcvh4qpfhcUNHdZokQHyAMN.svg)](https://asciinema.org/a/bapcvh4qpfhcUNHdZokQHyAMN)
+[![asciicast](https://asciinema.org/a/rnZHbKoLQWl3GzONKj9wRnNGv.svg)](https://asciinema.org/a/rnZHbKoLQWl3GzONKj9wRnNGv)
 
 Comparing files with nested structures in plain format
-[![asciicast](https://asciinema.org/a/8CAuXOCZGM0sjuc5NrYI86w11.svg)](https://asciinema.org/a/8CAuXOCZGM0sjuc5NrYI86w11)
+[![asciicast](https://asciinema.org/a/h0Yshdmj110wb79t6AUpCTRsn.svg)](https://asciinema.org/a/h0Yshdmj110wb79t6AUpCTRsn)
 
 Comparing files with nested structures in json format
-[![asciicast](https://asciinema.org/a/8OuCAuNUzHQ500KfbrMCQXcVo.svg)](https://asciinema.org/a/8OuCAuNUzHQ500KfbrMCQXcVo)
+[![asciicast](https://asciinema.org/a/zhrSXE3tappkMnihTYB18ySja.svg)](https://asciinema.org/a/zhrSXE3tappkMnihTYB18ySja)
