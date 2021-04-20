@@ -8,9 +8,7 @@ use function Functional\sort;
 
 function genDiff(string $pathToFile1, string $pathToFile2, string $format = 'stylish'): string
 {
-    $dataFile1 = processFile($pathToFile1);
-    $dataFile2 = processFile($pathToFile2);
-    $comparableData = compare($dataFile1, $dataFile2);
+    $comparableData = compare(processFile($pathToFile1), processFile($pathToFile2));
     return getPresentation($comparableData, $format);
 }
 

@@ -22,8 +22,10 @@ function processFile(string $pathToFile): object
 
 function getAbsolutePathToFile(string $path): string
 {
-    $baseDir = php_sapi_name() === 'cli' ? getcwd() : __DIR__;
-    return Path::makeAbsolute($path, (string) $baseDir);
+    $baseDir = php_sapi_name() === 'cli' ?
+               (getcwd() === false ? PATH_SEPARATOR : getcwd())
+               : __DIR__;
+    return Path::makeAbsolute($path, $baseDir);
 }
 
 function getParser(string $pathToFile): string
