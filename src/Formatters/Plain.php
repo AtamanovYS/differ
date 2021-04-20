@@ -47,7 +47,7 @@ function getPresentation(array $data): string
 }
 
 /**
-* @param bool|int|string|array|null $value
+* @param mixed $value
 **/
 function getValuePresentation($value): string
 {
