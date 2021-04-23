@@ -12,7 +12,6 @@
     "require": {
         "php": ">=7.4.0",
         "docopt/docopt": "^1.0",
-        "webmozart/path-util": "^2.3",
         "lstrojny/functional-php": "^1.17",
         "symfony/yaml": "^5.2",
         "lodash-php/lodash-php": "^0.0.7"

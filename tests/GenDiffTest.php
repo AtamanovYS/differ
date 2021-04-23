@@ -27,39 +27,48 @@ class GenDiffTest extends TestCase
         return __DIR__ . DIRECTORY_SEPARATOR . 'fixtures' . DIRECTORY_SEPARATOR . $filename;
     }
 
-    public function testGenDiffStylish(): void
+    public function testGenDiffStylishJson(): void
     {
         self::assertEquals(
             $this->exptectedStylish,
             genDiff($this->getFixturePath('file1.json'), $this->getFixturePath('file2.json'), 'stylish')
         );
+    }
 
+    public function testGenDiffStylishYaml(): void
+    {
         self::assertEquals(
             $this->exptectedStylish,
             genDiff($this->getFixturePath('file1.yml'), $this->getFixturePath('file2.yaml'), 'stylish')
         );
     }
 
-    public function testGenDiffPlain(): void
+    public function testGenDiffPlainJson(): void
     {
         self::assertEquals(
             $this->expectedPlain,
             genDiff($this->getFixturePath('file1.json'), $this->getFixturePath('file2.json'), 'plain')
         );
+    }
 
+    public function testGenDiffPlainYaml(): void
+    {
         self::assertEquals(
             $this->expectedPlain,
             genDiff($this->getFixturePath('file1.yml'), $this->getFixturePath('file2.yaml'), 'plain')
         );
     }
 
-    public function testGenDiffJson(): void
+    public function testGenDiffJsonJson(): void
     {
         self::assertEquals(
             $this->expectedJson,
             genDiff($this->getFixturePath('file1.json'), $this->getFixturePath('file2.json'), 'json')
         );
+    }
 
+    public function testGenDiffJsonYaml(): void
+    {
         self::assertEquals(
             $this->expectedJson,
             genDiff($this->getFixturePath('file1.yml'), $this->getFixturePath('file2.yaml'), 'json')
