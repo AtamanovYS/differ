@@ -12,8 +12,12 @@ function getPresentation(array $data): string
     );
 }
 
-function getPresentationIter(array $data, string $prevPath = ''): array
+function getPresentationIter(?array $data, string $prevPath = ''): array
 {
+    if (is_null($data)) {
+        return [null];
+    }
+
     return flat_map(
         $data,
         function ($elem) use ($prevPath): array {
@@ -24,7 +28,7 @@ function getPresentationIter(array $data, string $prevPath = ''): array
 
             switch ($elem['type']) {
                 case 'unchanged':
-                    return $elem['children'] !== null ? getPresentationIter($elem['children'], $path) : [null];
+                    return getPresentationIter($elem['children'], $path);
                 case 'replace':
                     $oldValue = getValuePresentation($elem['oldData']['value']);
                     $newValue = getValuePresentation($elem['newData']['value']);

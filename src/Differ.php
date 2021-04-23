@@ -88,7 +88,7 @@ function compareIter(object $data1, object $data2, ?int $constantLabel = null): 
                     null
             );
 
-            $getNodeType = function (?array $oldData, ?array $newData): string {
+            $getNodeType = function (?array $oldData, ?array $newData, bool $hasChildren): string {
                 if (!(is_null($oldData) || is_null($newData))) {
                     return $oldData['label'] !== 0 ? 'replace' : 'unchanged';
                 } else {
@@ -100,7 +100,7 @@ function compareIter(object $data1, object $data2, ?int $constantLabel = null): 
                 'key' => $key,
                 'oldData' => $oldData,
                 'newData' => $newData,
-                'type' => $getNodeType($oldData, $newData),
+                'type' => $getNodeType($oldData, $newData, !is_null($children)),
                 'children' => $children,
             ];
         },
