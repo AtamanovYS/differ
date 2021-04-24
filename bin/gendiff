@@ -25,6 +25,6 @@ Options:
   --format <fmt>                Report format [default: stylish]
 DOC;
 
-$args = \Docopt::handle($doc, []);
+$args = \Docopt::handle($doc);
 
 print_r(Differ\genDiff($args['<firstFile>'], $args['<secondFile>'], $args['--format']));
