@@ -33,6 +33,10 @@ function compare(object $data1, object $data2): array
     return compareIter($data1, $data2) ?? [];
 }
 
+/**
+* @param mixed $data1
+* @param mixed $data2
+**/
 function compareIter($data1, $data2, bool $parentObjectRemove = false, bool $parentObjectAdd = false): ?array
 {
     $data1Properties = get_object_vars(gettype($data1) === 'object' ? $data1 : new \stdClass());

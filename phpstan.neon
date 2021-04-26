@@ -12,7 +12,6 @@ parameters:
   reportUnmatchedIgnoredErrors: false
 
   ignoreErrors:
-   - '#with no typehint specified#'
    - '#Variable property access on object#'
 
   phpstanFunctionalProgramming:
