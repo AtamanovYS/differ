@@ -61,20 +61,21 @@ class DifferTest extends TestCase
 
     public function additionProviderExceptions(): array
     {
-        $withoutExtensionFile = $this->getFixturePath('withoutExtension');
-        $unknownExtensionFile = $this->getFixturePath('unknownExtension.undefined');
-        $nonexistentFile = $this->getFixturePath('unknownFile.json');
-        $wrongJsonFile = $this->getFixturePath('wrong.json');
-        $UndefinedValueFormatInStylishFile = $this->getFixturePath('withArray.json');
-        $correctFile = $this->getFixturePath('file1.json');
+        $withoutExtension = $this->getFixturePath('withoutExtension');
+        $unknownExtension = $this->getFixturePath('unknownExtension.undefined');
+        $nonexistent = $this->getFixturePath('unknownFile.json');
+        $wrongJson = $this->getFixturePath('wrong.json');
+        $undefinedValueFormatInStylish = $this->getFixturePath('withArray.json');
+        $correct = $this->getFixturePath('file1.json');
 
         return [
-            [$withoutExtensionFile, $correctFile, 'stylish', "No extension found"],
-            [$unknownExtensionFile, $correctFile, 'stylish', "Unknown extension"],
-            [$nonexistentFile, $correctFile, 'stylish', "doesn't exist or doesn't available"],
-            [$wrongJsonFile, $correctFile, 'stylish', "cannot be decoded to Json"],
-            [$UndefinedValueFormatInStylishFile, $correctFile, 'stylish', "Undefined value format in stylish format for value type"],
-            [$correctFile, $correctFile, 'unknownFormat', "Unknown format"],
+            [$withoutExtension, $correct, 'stylish', "No extension found"],
+            [$unknownExtension, $correct, 'stylish', "Unknown extension"],
+            [$nonexistent, $correct, 'stylish', "doesn't exist or doesn't available"],
+            [$wrongJson, $correct, 'stylish', "cannot be decoded to Json"],
+            [$undefinedValueFormatInStylish, $correct, 'stylish',
+                "Undefined value format in stylish format for value type"],
+            [$correct, $correct, 'unknownFormat', "Unknown format"],
         ];
     }
 }
