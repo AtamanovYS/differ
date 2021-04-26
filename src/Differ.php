@@ -3,17 +3,17 @@
 namespace Differ\Differ;
 
 use function Differ\Parsers\parse;
-use function Differ\Formatters\getPresentation;
+use function Differ\Formatters\format;
 use function Functional\sort;
 
 function genDiff(string $pathToFile1, string $pathToFile2, string $format = 'stylish'): string
 {
     $fileData1 = getFileData($pathToFile1);
     $fileData2 = getFileData($pathToFile2);
-    $processedData1 = parse($fileData1['content'], $fileData1['extension'], $fileData1['path']);
-    $processedData2 = parse($fileData2['content'], $fileData2['extension'], $fileData2['path']);
+    $processedData1 = parse($fileData1['content'], $fileData1['extension']);
+    $processedData2 = parse($fileData2['content'], $fileData2['extension']);
     $comparableData = compare($processedData1, $processedData2);
-    return getPresentation($comparableData, $format);
+    return format($comparableData, $format);
 }
 
 function getFileData(string $pathToFile): array
@@ -25,7 +25,6 @@ function getFileData(string $pathToFile): array
     return [
         'content' => file_get_contents($pathToFile),
         'extension' => pathinfo($pathToFile, PATHINFO_EXTENSION),
-        'path' => realpath($pathToFile)
     ];
 }
 
@@ -34,77 +33,69 @@ function compare(object $data1, object $data2): array
     return compareIter($data1, $data2) ?? [];
 }
 
-function compareIter(object $data1, object $data2, ?int $constantLabel = null): ?array
+function compareIter($data1, $data2, bool $parentObjectRemove = false, bool $parentObjectAdd = false): ?array
 {
-    $data1Array = get_object_vars($data1);
-    $data2Array = get_object_vars($data2);
+    $data1Properties = get_object_vars(gettype($data1) === 'object' ? $data1 : new \stdClass());
+    $data2Properties = get_object_vars(gettype($data2) === 'object' ? $data2 : new \stdClass());
 
-    if (count($data1Array) + count($data2Array) === 0) {
+    if (count($data1Properties) + count($data2Properties) === 0) {
         return null;
     }
 
     $comparableData = array_map(
-        function (string $key) use ($data1Array, $data2Array, $constantLabel): array {
-            $processData = function (
-                string $key,
-                array $leadingArray,
-                array $slaveArray,
-                int $defaultLabel,
-                ?int $constantLabel
-            ): ?array {
-                if (!array_key_exists($key, $leadingArray)) {
-                    return null;
-                }
+        function (string $key) use ($data1Properties, $data2Properties, $parentObjectRemove, $parentObjectAdd): array {
+            $oldValue = $data1Properties[$key] ?? null;
+            $newValue = $data2Properties[$key] ?? null;
 
-                if (!is_null($constantLabel)) {
-                    $label = $constantLabel;
-                } else {
-                    if (
-                        array_key_exists($key, $slaveArray) &&
-                        (gettype($leadingArray[$key]) === 'object' && gettype($slaveArray[$key]) === 'object' ||
-                        $leadingArray[$key] === $slaveArray[$key])
-                    ) {
-                        $label = 0;
-                    } else {
-                        $label = $defaultLabel;
-                    }
-                }
+            if ($parentObjectRemove) {
+                $type = 'unchanged';
+                $oldValueExist = true;
+                $children = compareIter($oldValue, null, $parentObjectRemove);
+            } elseif ($parentObjectAdd) {
+                $type = 'unchanged';
+                $newValueExist = true;
+                $children = compareIter($oldValue, $newValue, $parentObjectRemove, $parentObjectAdd);
+            } elseif (array_key_exists($key, $data1Properties) && !array_key_exists($key, $data2Properties)) {
+                $type = 'remove';
+                $oldValueExist = true;
+                $children = compareIter($oldValue, null, true);
+            } elseif (!array_key_exists($key, $data1Properties) && array_key_exists($key, $data2Properties)) {
+                $type = 'add';
+                $newValueExist = true;
+                $children = compareIter(null, $newValue, false, true);
+            } elseif ($newValue === $oldValue || (gettype($oldValue) === 'object' && gettype($newValue) === 'object')) {
+                $type = 'unchanged';
+                $newValueExist = true;
+                $oldValueExist = true;
+                $children = compareIter($oldValue, $newValue);
+            } else {
+                $type = 'replace';
+                $newValueExist = true;
+                $oldValueExist = true;
+                $children = compareIter(
+                    $oldValue,
+                    $newValue,
+                    gettype($oldValue) === 'object' ? true : false,
+                    gettype($newValue) === 'object' ? true : false
+                );
+            }
 
-                return [
-                    'value' => $leadingArray[$key],
-                    'isObject' => gettype($leadingArray[$key]) === 'object',
-                    'label' => $label
-                ];
-            };
-
-            $oldData = $processData($key, $data1Array, $data2Array, -1, $constantLabel);
-            $newData = $processData($key, $data2Array, $data1Array, 1, $constantLabel);
-
-            $children = compareIter(
-                !is_null($oldData) && gettype($oldData['value']) === 'object' ? $oldData['value'] : new \stdClass(),
-                !is_null($newData) && gettype($newData['value']) === 'object' ? $newData['value'] : new \stdClass(),
-                gettype($oldData['value'] ?? null) !== 'object' || gettype($newData['value'] ?? null) !== 'object' ?
-                    0 :
-                    null
-            );
-
-            $getNodeType = function (?array $oldData, ?array $newData, bool $hasChildren): string {
-                if (!(is_null($oldData) || is_null($newData))) {
-                    return $oldData['label'] !== 0 ? 'replace' : 'unchanged';
-                } else {
-                    return !is_null($oldData) ? 'remove' : 'add';
-                }
-            };
-
+            // существование значение ввёл, так как само значение может быть равно null
+            // И при выводе в формате Stylish есть проблемы с идентификацией,
+            // в Stylish.php можно и без этой информации пытаться вывести
+            // но это получится сложнее, непонятные условия появятся
+            // легче тут запомнить
             return [
                 'key' => $key,
-                'oldData' => $oldData,
-                'newData' => $newData,
-                'type' => $getNodeType($oldData, $newData, !is_null($children)),
+                'oldValue' => $oldValue,
+                'oldValueExist' => $oldValueExist ?? false,
+                'newValue' => $newValue,
+                'newValueExist' => $newValueExist ?? false,
+                'type' => $type,
                 'children' => $children,
             ];
         },
-        array_unique([...array_keys($data1Array), ...array_keys($data2Array)])
+        array_unique([...array_keys($data1Properties), ...array_keys($data2Properties)])
     );
 
     return sort($comparableData, fn ($left, $right) => $left['key'] <=> $right['key']);

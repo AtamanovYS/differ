@@ -43,7 +43,7 @@
         "test": "phpunit tests",
         "test-coverage": [
             "@putenv XDEBUG_MODE=coverage",
-            "phpunit --coverage-clover build/logs/clover.xml tests"
+            "phpunit --coverage-clover build/logs/clover.xml --coverage-text tests"
         ]
     }
 }

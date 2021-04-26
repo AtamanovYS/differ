@@ -2,16 +2,16 @@
 
 namespace Differ\Formatters;
 
-function getPresentation(array $data, string $format): string
+function format(array $data, string $format): string
 {
     switch ($format) {
         case "stylish":
-            return Stylish\getPresentation($data);
+            return Stylish\format($data);
         case "plain":
-            return Plain\getPresentation($data);
+            return Plain\format($data);
         case "json":
-            return Json\getPresentation($data);
+            return Json\format($data);
         default:
-            throw new \Exception("Unknown presentation format {$format}");
+            throw new \Exception("Unknown format {$format}");
     }
 }

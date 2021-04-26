@@ -4,15 +4,15 @@ namespace Differ\Formatters\Plain;
 
 use function Functional\flat_map;
 
-function getPresentation(array $data): string
+function format(array $data): string
 {
     return implode(
         "\n",
-        array_filter(getPresentationIter($data), fn ($elem) => !is_null($elem))
+        array_filter(formatIter($data), fn ($elem) => !is_null($elem))
     );
 }
 
-function getPresentationIter(?array $data, string $prevPath = ''): array
+function formatIter(?array $data, string $prevPath = ''): array
 {
     if (is_null($data)) {
         return [null];
@@ -28,13 +28,13 @@ function getPresentationIter(?array $data, string $prevPath = ''): array
 
             switch ($elem['type']) {
                 case 'unchanged':
-                    return getPresentationIter($elem['children'], $path);
+                    return formatIter($elem['children'], $path);
                 case 'replace':
-                    $oldValue = getValuePresentation($elem['oldData']['value']);
-                    $newValue = getValuePresentation($elem['newData']['value']);
+                    $oldValue = formatValue($elem['oldValue']);
+                    $newValue = formatValue($elem['newValue']);
                     return ["{$beginString}updated. From {$oldValue} to {$newValue}"];
                 case 'add':
-                    $newValue = getValuePresentation($elem['newData']['value']);
+                    $newValue = formatValue($elem['newValue']);
                     return ["{$beginString}added with value: {$newValue}"];
                 case 'remove':
                     return ["{$beginString}removed"];
@@ -48,17 +48,14 @@ function getPresentationIter(?array $data, string $prevPath = ''): array
 /**
 * @param mixed $value
 **/
-function getValuePresentation($value): string
+function formatValue($value): string
 {
     $type = gettype($value);
-    switch ($type) {
-        case 'NULL':
-            return 'null';
-        case 'boolean':
-        case 'integer':
-        case 'string':
-            return var_export($value, true);
-        default:
-            return '[complex value]';
+    if ($type === 'NULL') {
+        return 'null';
+    } elseif ($type === 'boolean' || $type === 'integer' || $type === 'string') {
+        return var_export($value, true);
+    } else {
+        return '[complex value]';
     }
 }
