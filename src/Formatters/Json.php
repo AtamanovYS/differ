@@ -14,42 +14,39 @@ function format(array $data): string
     );
 }
 
-function formatIter(?array $data, string $prevPath = ''): array
+function formatIter(array $data): array
 {
-    if ($data === null) {
-        return [null];
-    }
-
     return flatMapDepth(
         $data,
-        function ($elem) use ($prevPath): array {
-            $key = $elem['key'];
-            $path = "{$prevPath}/{$key}";
+        function ($elem): array {
+            $path = '/' . implode('/', $elem['path']);
 
-            switch ($elem['type']) {
-                case 'unchanged':
-                    return formatIter($elem['children'], $path);
-                case 'replace':
-                    return [
-                        'status' => 'replace',
-                        'value' => $elem['newValue'],
-                        'prevValue' => $elem['oldValue'],
-                        'path' => $path
-                    ];
-                case 'add':
-                    return [
-                        'status' => 'add',
-                        'value' => $elem['newValue'],
-                        'path' => $path
-                    ];
-                case 'remove':
-                    return [
-                        'status' => 'remove',
-                        'prevValue' => $elem['oldValue'],
-                        'path' => $path
-                    ];
-                default:
-                    return [null];
+            if (count($elem['children']) > 0) {
+                return formatIter($elem['children']);
+            } else {
+                switch ($elem['type']) {
+                    case 'replace':
+                        return [
+                            'status' => 'replace',
+                            'value' => $elem['newValue'],
+                            'prevValue' => $elem['oldValue'],
+                            'path' => $path
+                        ];
+                    case 'add':
+                        return [
+                            'status' => 'add',
+                            'value' => $elem['newValue'],
+                            'path' => $path
+                        ];
+                    case 'remove':
+                        return [
+                            'status' => 'remove',
+                            'prevValue' => $elem['oldValue'],
+                            'path' => $path
+                        ];
+                    default:
+                        return [null];
+                }
             }
         }
     );

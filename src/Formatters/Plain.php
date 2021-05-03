@@ -12,34 +12,30 @@ function format(array $data): string
     );
 }
 
-function formatIter(?array $data, string $prevPath = ''): array
+function formatIter(array $data): array
 {
-    if (is_null($data)) {
-        return [null];
-    }
-
     return flat_map(
         $data,
-        function ($elem) use ($prevPath): array {
-            $key = $elem['key'];
-            $path = $prevPath === '' ? $key : "{$prevPath}.{$key}";
-
+        function ($elem): array {
+            $path = implode('.', $elem['path']);
             $beginString = "Property '{$path}' was ";
 
-            switch ($elem['type']) {
-                case 'unchanged':
-                    return formatIter($elem['children'], $path);
-                case 'replace':
-                    $oldValue = formatValue($elem['oldValue']);
-                    $newValue = formatValue($elem['newValue']);
-                    return ["{$beginString}updated. From {$oldValue} to {$newValue}"];
-                case 'add':
-                    $newValue = formatValue($elem['newValue']);
-                    return ["{$beginString}added with value: {$newValue}"];
-                case 'remove':
-                    return ["{$beginString}removed"];
-                default:
-                    return [null];
+            if (count($elem['children']) > 0) {
+                return formatIter($elem['children']);
+            } else {
+                switch ($elem['type']) {
+                    case 'replace':
+                        $oldValue = formatValue($elem['oldValue']);
+                        $newValue = formatValue($elem['newValue']);
+                        return ["{$beginString}updated. From {$oldValue} to {$newValue}"];
+                    case 'add':
+                        $newValue = formatValue($elem['newValue']);
+                        return ["{$beginString}added with value: {$newValue}"];
+                    case 'remove':
+                        return ["{$beginString}removed"];
+                    default:
+                        return [null];
+                }
             }
         }
     );
@@ -50,10 +46,9 @@ function formatIter(?array $data, string $prevPath = ''): array
 **/
 function formatValue($value): string
 {
-    $type = gettype($value);
-    if ($type === 'NULL') {
+    if (is_null($value)) {
         return 'null';
-    } elseif ($type === 'boolean' || $type === 'integer' || $type === 'string') {
+    } elseif (is_bool($value) || is_int($value) || is_string($value)) {
         return var_export($value, true);
     } else {
         return '[complex value]';

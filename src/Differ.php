@@ -30,76 +30,42 @@ function getFileData(string $pathToFile): array
 
 function compare(object $data1, object $data2): array
 {
-    return compareIter($data1, $data2) ?? [];
+    return compareIter($data1, $data2);
 }
 
-/**
-* @param mixed $data1
-* @param mixed $data2
-**/
-function compareIter($data1, $data2, bool $parentObjectRemove = false, bool $parentObjectAdd = false): ?array
+function compareIter(object $data1, object $data2, array $prevPath = []): array
 {
-    $data1Properties = get_object_vars(gettype($data1) === 'object' ? $data1 : new \stdClass());
-    $data2Properties = get_object_vars(gettype($data2) === 'object' ? $data2 : new \stdClass());
-
-    if (count($data1Properties) + count($data2Properties) === 0) {
-        return null;
-    }
-
     $comparableData = array_map(
-        function (string $key) use ($data1Properties, $data2Properties, $parentObjectRemove, $parentObjectAdd): array {
-            $oldValue = $data1Properties[$key] ?? null;
-            $newValue = $data2Properties[$key] ?? null;
+        function (string $key) use ($data1, $data2, $prevPath): array {
+            $oldValue = $data1->$key ?? null;
+            $newValue = $data2->$key ?? null;
 
-            if ($parentObjectRemove) {
-                $type = 'unchanged';
-                $oldValueExist = true;
-                $children = compareIter($oldValue, null, $parentObjectRemove);
-            } elseif ($parentObjectAdd) {
-                $type = 'unchanged';
-                $newValueExist = true;
-                $children = compareIter($oldValue, $newValue, $parentObjectRemove, $parentObjectAdd);
-            } elseif (array_key_exists($key, $data1Properties) && !array_key_exists($key, $data2Properties)) {
+            $path = [...$prevPath, $key];
+
+            if (!property_exists($data2, $key)) {
                 $type = 'remove';
-                $oldValueExist = true;
-                $children = compareIter($oldValue, null, true);
-            } elseif (!array_key_exists($key, $data1Properties) && array_key_exists($key, $data2Properties)) {
+            } elseif (!property_exists($data1, $key)) {
                 $type = 'add';
-                $newValueExist = true;
-                $children = compareIter(null, $newValue, false, true);
-            } elseif ($newValue === $oldValue || (gettype($oldValue) === 'object' && gettype($newValue) === 'object')) {
+            } elseif (is_object($newValue) && is_object($oldValue) ? $newValue == $oldValue : $newValue === $oldValue) {
                 $type = 'unchanged';
-                $newValueExist = true;
-                $oldValueExist = true;
-                $children = compareIter($oldValue, $newValue);
             } else {
                 $type = 'replace';
-                $newValueExist = true;
-                $oldValueExist = true;
-                $children = compareIter(
-                    $oldValue,
-                    $newValue,
-                    gettype($oldValue) === 'object' ? true : false,
-                    gettype($newValue) === 'object' ? true : false
-                );
             }
 
-            // существование значение ввёл, так как само значение может быть равно null
-            // И при выводе в формате Stylish есть проблемы с идентификацией,
-            // в Stylish.php можно и без этой информации пытаться вывести
-            // но это получится сложнее, непонятные условия появятся
-            // легче тут запомнить
+            if (is_object($oldValue) && is_object($newValue)) {
+                $children = compareIter($oldValue, $newValue, $path);
+            }
+
             return [
                 'key' => $key,
                 'oldValue' => $oldValue,
-                'oldValueExist' => $oldValueExist ?? false,
                 'newValue' => $newValue,
-                'newValueExist' => $newValueExist ?? false,
                 'type' => $type,
-                'children' => $children,
+                'children' => $children ?? [],
+                'path' => $path,
             ];
         },
-        array_unique([...array_keys($data1Properties), ...array_keys($data2Properties)])
+        array_unique([...array_keys(get_object_vars($data1)), ...array_keys(get_object_vars($data2))])
     );
 
     return sort($comparableData, fn ($left, $right) => $left['key'] <=> $right['key']);
