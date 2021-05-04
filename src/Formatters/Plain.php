@@ -8,7 +8,7 @@ function format(array $data): string
 {
     return implode(
         "\n",
-        array_filter(formatIter($data), fn ($elem) => !is_null($elem))
+        array_filter(formatIter($data))
     );
 }
 

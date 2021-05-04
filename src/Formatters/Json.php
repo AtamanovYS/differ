@@ -9,7 +9,7 @@ function format(array $data): string
     // Приведение к типу string, чтобы тесты проходили
     // Здесь невозможно ситуации, чтобы нельзя было привести к json
     return (string) json_encode(
-        array_values(array_filter(formatIter($data), fn ($elem) => !is_null($elem))),
+        array_values(array_filter(formatIter($data))),
         JSON_UNESCAPED_SLASHES
     );
 }
