@@ -17,13 +17,12 @@ function formatIter(array $data, int $indent = 2): array
     return flat_map(
         $data,
         function ($elem) use ($indent): array {
-
-            $spaces = str_repeat(' ', $indent);
             $key = $elem['key'];
-            $spacesEnd = str_repeat(' ', $indent + 2);
 
             if (count($elem['children']) > 0) {
                 $formattedValue = formatIter($elem['children'], $indent + 4);
+                $spaces = str_repeat(' ', $indent);
+                $spacesEnd = str_repeat(' ', $indent + 2);
                 return ["{$spaces}  {$key}: {" ,...$formattedValue, "{$spacesEnd}}"];
             } else {
                 switch ($elem['type']) {
