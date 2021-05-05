@@ -24,9 +24,9 @@ class DifferTest extends TestCase
     /**
      * @dataProvider additionProviderExceptions
      */
-    public function testGenDiffException($file1, $file2, $format, $exptected): void
+    public function testGenDiffException($file1, $file2, $format): void
     {
-        $this->expectExceptionMessage($exptected);
+        $this->expectException(\Exception::class);
         genDiff($file1, $file2, $format);
     }
 
@@ -69,13 +69,12 @@ class DifferTest extends TestCase
         $correct = $this->getFixturePath('file1.json');
 
         return [
-            [$withoutExtension, $correct, 'stylish', "No extension found"],
-            [$unknownExtension, $correct, 'stylish', "Unknown extension"],
-            [$nonexistent, $correct, 'stylish', "doesn't exist or doesn't available"],
-            [$wrongJson, $correct, 'stylish', "cannot be decoded to Json"],
-            [$undefinedValueFormatInStylish, $correct, 'stylish',
-                "Undefined value format in stylish format for value type"],
-            [$correct, $correct, 'unknownFormat', "Unknown format"],
+            [$withoutExtension, $correct, 'stylish'],
+            [$unknownExtension, $correct, 'stylish'],
+            [$nonexistent, $correct, 'stylish'],
+            [$wrongJson, $correct, 'stylish'],
+            [$undefinedValueFormatInStylish, $correct, 'stylish'],
+            [$correct, $correct, 'unknownFormat'],
         ];
     }
 }
