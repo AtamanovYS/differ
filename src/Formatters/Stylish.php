@@ -8,7 +8,7 @@ function format(array $data): string
 {
     return implode(
         "\n",
-        ['{', ...array_filter(flatten(formatIter($data))), '}']
+        ['{', ...flatten(formatIter($data)), '}']
     );
 }
 
@@ -17,44 +17,49 @@ function formatIter(array $data, int $indent = 2): array
     return flat_map(
         $data,
         function ($elem) use ($indent): array {
-            $oldElem = formElement($elem, false, $indent);
-            $newElem = formElement($elem, true, $indent);
 
-            return [$oldElem, $oldElem === $newElem ? null : $newElem];
+            $spaces = str_repeat(' ', $indent);
+            $key = $elem['key'];
+            $spacesEnd = str_repeat(' ', $indent + 2);
+
+            if (count($elem['children']) > 0) {
+                $formattedValue = formatIter($elem['children'], $indent + 4);
+                return ["{$spaces}  {$key}: {" ,...$formattedValue, "{$spacesEnd}}"];
+            } else {
+                switch ($elem['type']) {
+                    case 'replace':
+                        $oldElem = formElem($key, $elem['oldValue'], $indent, '-');
+                        $newElem = formElem($key, $elem['newValue'], $indent, '+');
+                        return [$oldElem, $newElem];
+                    case 'add':
+                        $newElem = formElem($key, $elem['newValue'], $indent, '+');
+                        return [$newElem];
+                    case 'remove':
+                        $oldElem = formElem($key, $elem['oldValue'], $indent, '-');
+                        return [$oldElem];
+                    default:
+                        $newElem = formElem($key, $elem['newValue'], $indent);
+                        return [$newElem];
+                }
+            }
         }
     );
 }
 
-function formElement(array $elem, bool $isNew, int $indent): ?array
+/**
+* @param bool|int|string|object|null $value
+**/
+function formElem(string $key, $value, int $indent, string $label = ' '): array
 {
-    if (($isNew && $elem['type'] === 'remove') || (!$isNew && $elem['type'] === 'add')) {
-        return null;
-    }
-
-    $type = $elem['type'];
-    $key = $elem['key'];
-    $value = $isNew ? $elem['newValue'] : $elem['oldValue'];
-
-    if (($type === 'add' || ($type === 'replace' && count($elem['children']) === 0)) && $isNew) {
-        $label = '+';
-    } elseif (($type === 'remove' || ($type === 'replace' && count($elem['children']) === 0)) && !$isNew) {
-        $label = '-';
-    } else {
-        $label = ' ';
-    }
-
     $spaces = str_repeat(' ', $indent);
-
-    if (count($elem['children']) > 0 || is_object($value)) {
-        $formattedValue = count($elem['children']) > 0 ?
-            formatIter($elem['children'], $indent + 4) :
-            formatValueObject($value, $indent + 4);
+    if (is_object($value)) {
+        $formattedValue = formatValueObject($value, $indent + 4);
         $spacesEnd = str_repeat(' ', $indent + 2);
         return ["{$spaces}{$label} {$key}: {" ,...$formattedValue, "{$spacesEnd}}"];
+    } else {
+        $formattedValue = formatValue($value);
+        return ["{$spaces}{$label} {$key}: {$formattedValue}"];
     }
-
-    $formattedValue = formatValue($value);
-    return ["{$spaces}{$label} {$key}: {$formattedValue}"];
 }
 
 function formatValueObject(object $valueObject, int $indent): array
@@ -62,16 +67,7 @@ function formatValueObject(object $valueObject, int $indent): array
     return flat_map(
         get_object_vars($valueObject),
         function ($value, $key) use ($indent): array {
-            $spaces = str_repeat(' ', $indent);
-
-            if (is_object($value)) {
-                $formattedValue = formatValueObject($value, $indent + 4);
-                $spacesEnd = str_repeat(' ', $indent + 2);
-                return ["{$spaces}  {$key}: {" ,...$formattedValue, "{$spacesEnd}}"];
-            }
-
-            $formattedValue = formatValue($value);
-            return ["{$spaces}  {$key}: {$formattedValue}"];
+            return formElem($key, $value, $indent);
         }
     );
 }
