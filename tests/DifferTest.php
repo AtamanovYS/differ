@@ -18,7 +18,7 @@ class DifferTest extends TestCase
      */
     public function testGenDiff($file1, $file2, $format, $exptected): void
     {
-        self::assertEquals($exptected, genDiff($file1, $file2, $format));
+        $this->assertEquals($exptected, genDiff($file1, $file2, $format));
     }
 
     /**
