@@ -6,13 +6,6 @@
 [![Test Coverage](https://api.codeclimate.com/v1/badges/7aa6113cad34d1b55339/test_coverage)](https://codeclimate.com/github/AtamanovYS/php-project-lvl2/test_coverage)
 ------
 
-## Setup
-
-```sh
-$ git clone https://github.com/AtamanovYS/php-project-lvl2.git
-
-$ make install
-```
 ## Description
 
 Differ shows the difference between two data structures.
