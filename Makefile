@@ -14,5 +14,5 @@ test:
 	composer run-script test
 test-coverage:
 	composer run-script test-coverage
-pushAll:
+push-all:
 	git add -A; git commit -m '$(m)'; git push
