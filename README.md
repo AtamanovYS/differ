@@ -11,7 +11,7 @@
 Differ shows the difference between two data structures.
 Utility features:
 * Support different input formats: yaml and json
-* Generating a report in plain text, stylish and json format
+* Generating a report in various formats
 
 Use `./bin/gendiff -h` to get instructions how to use
 ```
