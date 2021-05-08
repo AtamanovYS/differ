@@ -38,7 +38,7 @@ class DifferTest extends TestCase
             json_decode(file_get_contents($this->getFixturePath('diff.json')), false)
         );
         $expectedJsonFlat = json_encode(
-            json_decode(file_get_contents($this->getFixturePath('diff.json-flat')), false)
+            json_decode(file_get_contents($this->getFixturePath('diff.flat.json')), false)
         );
 
         $file1Json = $this->getFixturePath('file1.json');
