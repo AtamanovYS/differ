@@ -35,12 +35,10 @@ class DifferTest extends TestCase
         $expectedStylish = file_get_contents($this->getFixturePath('diff.stylish'));
         $expectedPlain = file_get_contents($this->getFixturePath('diff.plain'));
         $expectedJson = json_encode(
-            json_decode(file_get_contents($this->getFixturePath('diff.json')), false),
-            JSON_UNESCAPED_SLASHES
+            json_decode(file_get_contents($this->getFixturePath('diff.json')), false)
         );
         $expectedJsonFlat = json_encode(
-            json_decode(file_get_contents($this->getFixturePath('diff.json-flat')), false),
-            JSON_UNESCAPED_SLASHES
+            json_decode(file_get_contents($this->getFixturePath('diff.json-flat')), false)
         );
 
         $file1Json = $this->getFixturePath('file1.json');

@@ -46,4 +46,4 @@ Comparing with nested structures in json format
 [![asciicast](https://asciinema.org/a/e9MX75cPadqnb0lsiWAVuZ13o.svg)](https://asciinema.org/a/e9MX75cPadqnb0lsiWAVuZ13o)
 
 Comparing with nested structures in json-flat format
-[![asciicast](https://asciinema.org/a/yYMRPhgPAiT4ie83t8QqZ0BUT.svg)](https://asciinema.org/a/yYMRPhgPAiT4ie83t8QqZ0BUT)
+[![asciicast](https://asciinema.org/a/raocXqyLxNBM4399GzbOCBtSy.svg)](https://asciinema.org/a/raocXqyLxNBM4399GzbOCBtSy)

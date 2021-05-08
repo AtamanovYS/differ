@@ -2,17 +2,17 @@
    {
       "status": "add",
       "newValue": false,
-      "path": "/common/follow"
+      "path": ["common", "follow"]
    },
    {
       "status": "unchanged",
       "value": "Value 1",
-      "path": "/common/setting1"
+      "path": ["common", "setting1"]
    },
    {
       "status": "remove",
       "prevValue": 200,
-      "path": "/common/setting2"
+      "path": ["common", "setting2"]
    },
    {
       "status": "replace",
@@ -20,46 +20,46 @@
          "key": "value"
       },
       "prevValue": true,
-      "path": "/common/setting3"
+      "path": ["common", "setting3"]
    },
    {
       "status": "add",
       "newValue": "blah blah",
-      "path": "/common/setting4"
+      "path": ["common", "setting4"]
    },
    {
       "status": "add",
       "newValue": {
          "key5": "value5"
       },
-      "path": "/common/setting5"
+      "path": ["common", "setting5"]
    },
    {
       "status": "replace",
       "newValue": "so much",
       "prevValue": "too much",
-      "path": "/common/setting6/doge/wow"
+      "path": ["common", "setting6", "doge", "wow"]
    },
    {
       "status": "unchanged",
       "value": "value",
-      "path": "/common/setting6/key"
+      "path": ["common", "setting6", "key"]
    },
    {
       "status": "add",
       "newValue": "vops",
-      "path": "/common/setting6/ops"
+      "path": ["common", "setting6", "ops"]
    },
    {
       "status": "replace",
       "newValue": "bars",
       "prevValue": "bas",
-      "path": "/group1/baz"
+      "path": ["group1", "baz"]
    },
    {
       "status": "unchanged",
       "value": "bar",
-      "path": "/group1/foo"
+      "path": ["group1", "foo"]
    },
    {
       "status": "replace",
@@ -67,7 +67,7 @@
       "prevValue": {
          "key": "value"
       },
-      "path": "/group1/nest"
+      "path": ["group1", "nest"]
    },
    {
       "status": "remove",
@@ -77,7 +77,7 @@
             "id": 45
          }
       },
-      "path": "/group2"
+      "path": ["group2"]
    },
    {
       "status": "add",
@@ -89,51 +89,51 @@
          },
          "fee": 100500
       },
-      "path": "/group3"
+      "path": ["group3"]
    },
    {
       "status": "replace",
       "newValue": "",
       "prevValue": null,
-      "path": "/group4/default"
+      "path": ["group4", "default"]
    },
    {
       "status": "replace",
       "newValue": null,
       "prevValue": 0,
-      "path": "/group4/foo"
+      "path": ["group4", "foo"]
    },
    {
       "status": "replace",
       "newValue": "none",
       "prevValue": false,
-      "path": "/group4/isNested"
+      "path": ["group4", "isNested"]
    },
    {
       "status": "add",
       "newValue": false,
-      "path": "/group4/key"
+      "path": ["group4", "key"]
    },
    {
       "status": "replace",
       "newValue": 0,
       "prevValue": "",
-      "path": "/group4/nest/bar"
+      "path": ["group4", "nest", "bar"]
    },
    {
       "status": "remove",
       "prevValue": true,
-      "path": "/group4/nest/isNested"
+      "path": ["group4", "nest", "isNested"]
    },
    {
       "status": "add",
       "newValue": true,
-      "path": "/group4/someKey"
+      "path": ["group4", "someKey"]
    },
    {
       "status": "replace",
       "newValue": "bar",
       "prevValue": "bas",
-      "path": "/group4/type"
+      "path": ["group4", "type"]
    }
 ]

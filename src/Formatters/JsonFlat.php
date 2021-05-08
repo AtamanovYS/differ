@@ -8,15 +8,15 @@ function format(array $data): string
 {
     // Приведение к типу string, чтобы тесты проходили
     // Здесь невозможно ситуации, чтобы нельзя было привести к json
-    return (string) json_encode(formatIter($data), JSON_UNESCAPED_SLASHES);
+    return (string) json_encode(formatIter($data));
 }
 
-function formatIter(array $data, string $prevPath = ''): array
+function formatIter(array $data, array $prevPath = []): array
 {
     return flatMapDepth(
         $data,
         function ($elem) use ($prevPath): array {
-            $path = "{$prevPath}/{$elem['key']}";
+            $path = [...$prevPath, $elem['key']];
 
             switch ($elem['type']) {
                 case 'nested':
