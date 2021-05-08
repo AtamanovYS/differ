@@ -8,10 +8,7 @@ function format(array $data): string
 {
     // Приведение к типу string, чтобы тесты проходили
     // Здесь невозможно ситуации, чтобы нельзя было привести к json
-    return (string) json_encode(
-        array_values(array_filter(formatIter($data))),
-        JSON_UNESCAPED_SLASHES
-    );
+    return (string) json_encode(formatIter($data), JSON_UNESCAPED_SLASHES);
 }
 
 function formatIter(array $data, string $prevPath = ''): array
@@ -27,14 +24,14 @@ function formatIter(array $data, string $prevPath = ''): array
                 case 'replace':
                     return [
                         'status' => 'replace',
-                        'value' => $elem['newValue'],
+                        'newValue' => $elem['newValue'],
                         'prevValue' => $elem['oldValue'],
                         'path' => $path
                     ];
                 case 'add':
                     return [
                         'status' => 'add',
-                        'value' => $elem['newValue'],
+                        'newValue' => $elem['newValue'],
                         'path' => $path
                     ];
                 case 'remove':
@@ -44,7 +41,11 @@ function formatIter(array $data, string $prevPath = ''): array
                         'path' => $path
                     ];
                 case 'unchanged':
-                    return [null];
+                    return [
+                        'status' => 'unchanged',
+                        'value' => $elem['oldValue'],
+                        'path' => $path
+                    ];
                 default:
                     throw new \Exception("unknown node type: \"{$elem['type']}\"");
             }

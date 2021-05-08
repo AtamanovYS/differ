@@ -1,124 +1,139 @@
 [
    {
-      "status":"add",
-      "value":false,
-      "path":"/common/follow"
+      "status": "add",
+      "newValue": false,
+      "path": "/common/follow"
    },
    {
-      "status":"remove",
-      "prevValue":200,
-      "path":"/common/setting2"
+      "status": "unchanged",
+      "value": "Value 1",
+      "path": "/common/setting1"
    },
    {
-      "status":"replace",
-      "value":{
-         "key":"value"
+      "status": "remove",
+      "prevValue": 200,
+      "path": "/common/setting2"
+   },
+   {
+      "status": "replace",
+      "newValue": {
+         "key": "value"
       },
-      "prevValue":true,
-      "path":"/common/setting3"
+      "prevValue": true,
+      "path": "/common/setting3"
    },
    {
-      "status":"add",
-      "value":"blah blah",
-      "path":"/common/setting4"
+      "status": "add",
+      "newValue": "blah blah",
+      "path": "/common/setting4"
    },
    {
-      "status":"add",
-      "value":{
-         "key5":"value5"
+      "status": "add",
+      "newValue": {
+         "key5": "value5"
       },
-      "path":"/common/setting5"
+      "path": "/common/setting5"
    },
    {
-      "status":"replace",
-      "value":"so much",
-      "prevValue":"too much",
-      "path":"/common/setting6/doge/wow"
+      "status": "replace",
+      "newValue": "so much",
+      "prevValue": "too much",
+      "path": "/common/setting6/doge/wow"
    },
    {
-      "status":"add",
-      "value":"vops",
-      "path":"/common/setting6/ops"
+      "status": "unchanged",
+      "value": "value",
+      "path": "/common/setting6/key"
    },
    {
-      "status":"replace",
-      "value":"bars",
-      "prevValue":"bas",
-      "path":"/group1/baz"
+      "status": "add",
+      "newValue": "vops",
+      "path": "/common/setting6/ops"
    },
    {
-      "status":"replace",
-      "value":"str",
-      "prevValue":{
-         "key":"value"
+      "status": "replace",
+      "newValue": "bars",
+      "prevValue": "bas",
+      "path": "/group1/baz"
+   },
+   {
+      "status": "unchanged",
+      "value": "bar",
+      "path": "/group1/foo"
+   },
+   {
+      "status": "replace",
+      "newValue": "str",
+      "prevValue": {
+         "key": "value"
       },
-      "path":"/group1/nest"
+      "path": "/group1/nest"
    },
    {
-      "status":"remove",
-      "prevValue":{
-         "abc":12345,
-         "deep":{
-            "id":45
+      "status": "remove",
+      "prevValue": {
+         "abc": 12345,
+         "deep": {
+            "id": 45
          }
       },
-      "path":"/group2"
+      "path": "/group2"
    },
    {
-      "status":"add",
-      "value":{
-         "deep":{
-            "id":{
-               "number":45
+      "status": "add",
+      "newValue": {
+         "deep": {
+            "id": {
+               "number": 45
             }
          },
-         "fee":100500
+         "fee": 100500
       },
-      "path":"/group3"
+      "path": "/group3"
    },
    {
-      "status":"replace",
-      "value":"",
-      "prevValue":null,
-      "path":"/group4/default"
+      "status": "replace",
+      "newValue": "",
+      "prevValue": null,
+      "path": "/group4/default"
    },
    {
-      "status":"replace",
-      "value":null,
-      "prevValue":0,
-      "path":"/group4/foo"
+      "status": "replace",
+      "newValue": null,
+      "prevValue": 0,
+      "path": "/group4/foo"
    },
    {
-      "status":"replace",
-      "value":"none",
-      "prevValue":false,
-      "path":"/group4/isNested"
+      "status": "replace",
+      "newValue": "none",
+      "prevValue": false,
+      "path": "/group4/isNested"
    },
    {
-      "status":"add",
-      "value":false,
-      "path":"/group4/key"
+      "status": "add",
+      "newValue": false,
+      "path": "/group4/key"
    },
    {
-      "status":"replace",
-      "value":0,
-      "prevValue":"",
-      "path":"/group4/nest/bar"
+      "status": "replace",
+      "newValue": 0,
+      "prevValue": "",
+      "path": "/group4/nest/bar"
    },
    {
-      "status":"remove",
-      "prevValue":true,
-      "path":"/group4/nest/isNested"
+      "status": "remove",
+      "prevValue": true,
+      "path": "/group4/nest/isNested"
    },
    {
-      "status":"add",
-      "value":true,
-      "path":"/group4/someKey"
+      "status": "add",
+      "newValue": true,
+      "path": "/group4/someKey"
    },
    {
-      "status":"replace",
-      "value":"bar",
-      "prevValue":"bas",
-      "path":"/group4/type"
+      "status": "replace",
+      "newValue": "bar",
+      "prevValue": "bas",
+      "path": "/group4/type"
    }
 ]
