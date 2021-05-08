@@ -38,8 +38,8 @@ class DifferTest extends TestCase
             json_decode(file_get_contents($this->getFixturePath('diff.json')), false),
             JSON_UNESCAPED_SLASHES
         );
-        $expectedJsonPlain = json_encode(
-            json_decode(file_get_contents($this->getFixturePath('diff.json-plain')), false),
+        $expectedJsonFlat = json_encode(
+            json_decode(file_get_contents($this->getFixturePath('diff.json-flat')), false),
             JSON_UNESCAPED_SLASHES
         );
 
@@ -61,9 +61,9 @@ class DifferTest extends TestCase
             [$file1Yaml, $file2Yaml, 'json', $expectedJson],
             [$file1Yaml, $file2Json, 'json', $expectedJson],
 
-            [$file1Json, $file2Json, 'json-plain', $expectedJsonPlain],
-            [$file1Yaml, $file2Yaml, 'json-plain', $expectedJsonPlain],
-            [$file1Yaml, $file2Json, 'json-plain', $expectedJsonPlain],
+            [$file1Json, $file2Json, 'json-flat', $expectedJsonFlat],
+            [$file1Yaml, $file2Yaml, 'json-flat', $expectedJsonFlat],
+            [$file1Yaml, $file2Json, 'json-flat', $expectedJsonFlat],
         ];
     }
 

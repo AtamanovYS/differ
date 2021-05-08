@@ -10,8 +10,8 @@
 
 Differ shows the difference between two data structures.
 Utility features:
-* Support different input formats: yaml and json
-* Generating a report in various formats
+* Support different input formats: yaml (yml) and json
+* Generating a report in various formats: stylish, plain, json, json-flat
 
 Use `./bin/gendiff -h` to get instructions how to use
 ```
@@ -36,11 +36,14 @@ Comparing flat json files in stylish format
 Comparing flat yml files in stylish format
 [![asciicast](https://asciinema.org/a/V70C575Xehd7c8NR75zjt3f30.svg)](https://asciinema.org/a/V70C575Xehd7c8NR75zjt3f30)
 
-Comparing files with nested structures in stylish format
+Comparing with nested structures in stylish format
 [![asciicast](https://asciinema.org/a/rnZHbKoLQWl3GzONKj9wRnNGv.svg)](https://asciinema.org/a/rnZHbKoLQWl3GzONKj9wRnNGv)
 
-Comparing files with nested structures in plain format
+Comparing with nested structures in plain format
 [![asciicast](https://asciinema.org/a/h0Yshdmj110wb79t6AUpCTRsn.svg)](https://asciinema.org/a/h0Yshdmj110wb79t6AUpCTRsn)
 
-Comparing files with nested structures in json format
-[![asciicast](https://asciinema.org/a/zhrSXE3tappkMnihTYB18ySja.svg)](https://asciinema.org/a/zhrSXE3tappkMnihTYB18ySja)
+Comparing with nested structures in json format
+[![asciicast](https://asciinema.org/a/e9MX75cPadqnb0lsiWAVuZ13o.svg)](https://asciinema.org/a/e9MX75cPadqnb0lsiWAVuZ13o)
+
+Comparing with nested structures in json-flat format
+[![asciicast](https://asciinema.org/a/cgjVto4QIdaa1w2spCRmWzqyo.svg)](https://asciinema.org/a/cgjVto4QIdaa1w2spCRmWzqyo)

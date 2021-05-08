@@ -1,6 +1,6 @@
 <?php
 
-namespace Differ\Formatters\JsonPlain;
+namespace Differ\Formatters\JsonFlat;
 
 use function _\flatMapDepth;
 

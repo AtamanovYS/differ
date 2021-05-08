@@ -32,7 +32,7 @@
             "src/Formatters/Stylish.php",
             "src/Formatters/Plain.php",
             "src/Formatters/Json.php",
-            "src/Formatters/JsonPlain.php"
+            "src/Formatters/JsonFlat.php"
         ],
         "psr-4": {
             "Differ\\Tests\\": "tests"
