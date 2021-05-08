@@ -11,6 +11,8 @@ function format(array $data, string $format): string
             return Plain\format($data);
         case "json":
             return Json\format($data);
+        case "json-plain":
+            return JsonPlain\format($data);
         default:
             throw new \Exception("Unknown format {$format}");
     }

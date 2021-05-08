@@ -12,45 +12,49 @@ function format(array $data): string
     );
 }
 
-function formatIter(array $data): array
+function formatIter(array $data, string $prevPath = ''): array
 {
     return flat_map(
         $data,
-        function ($elem): array {
-            $path = implode('.', $elem['path']);
+        function ($elem) use ($prevPath): array {
+            if ($prevPath !== '') {
+                $path = "{$prevPath}.{$elem['key']}";
+            } else {
+                $path = $elem['key'];
+            }
             $beginString = "Property '{$path}' was ";
 
-            if (count($elem['children']) > 0) {
-                return formatIter($elem['children']);
-            } else {
-                switch ($elem['type']) {
-                    case 'replace':
-                        $oldValue = formatValue($elem['oldValue']);
-                        $newValue = formatValue($elem['newValue']);
-                        return ["{$beginString}updated. From {$oldValue} to {$newValue}"];
-                    case 'add':
-                        $newValue = formatValue($elem['newValue']);
-                        return ["{$beginString}added with value: {$newValue}"];
-                    case 'remove':
-                        return ["{$beginString}removed"];
-                    default:
-                        return [null];
-                }
+            switch ($elem['type']) {
+                case 'nested':
+                    return formatIter($elem['children'], $path);
+                case 'replace':
+                    $oldValue = formatValue($elem['oldValue']);
+                    $newValue = formatValue($elem['newValue']);
+                    return ["{$beginString}updated. From {$oldValue} to {$newValue}"];
+                case 'add':
+                    $newValue = formatValue($elem['newValue']);
+                    return ["{$beginString}added with value: {$newValue}"];
+                case 'remove':
+                    return ["{$beginString}removed"];
+                case 'unchanged':
+                    return [null];
+                default:
+                    throw new \Exception("unknown node type: \"{$elem['type']}\"");
             }
         }
     );
 }
 
 /**
-* @param mixed $value
-**/
+ * @param mixed $value
+ **/
 function formatValue($value): string
 {
     if (is_null($value)) {
         return 'null';
-    } elseif (is_bool($value) || is_int($value) || is_string($value)) {
-        return var_export($value, true);
-    } else {
+    } elseif (is_object($value) || is_array($value)) {
         return '[complex value]';
+    } else {
+        return var_export($value, true);
     }
 }

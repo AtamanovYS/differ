@@ -33,27 +33,24 @@ function compare(object $data1, object $data2): array
     return compareIter($data1, $data2);
 }
 
-function compareIter(object $data1, object $data2, array $prevPath = []): array
+function compareIter(object $data1, object $data2): array
 {
     $comparableData = array_map(
-        function (string $key) use ($data1, $data2, $prevPath): array {
+        function (string $key) use ($data1, $data2): array {
             $oldValue = $data1->$key ?? null;
             $newValue = $data2->$key ?? null;
 
-            $path = [...$prevPath, $key];
-
-            if (!property_exists($data2, $key)) {
+            if (is_object($newValue) && is_object($oldValue)) {
+                $type = 'nested';
+                $children = compareIter($oldValue, $newValue);
+            } elseif (!property_exists($data2, $key)) {
                 $type = 'remove';
             } elseif (!property_exists($data1, $key)) {
                 $type = 'add';
-            } elseif (is_object($newValue) && is_object($oldValue) ? $newValue == $oldValue : $newValue === $oldValue) {
+            } elseif ($newValue === $oldValue) {
                 $type = 'unchanged';
             } else {
                 $type = 'replace';
-            }
-
-            if (is_object($oldValue) && is_object($newValue)) {
-                $children = compareIter($oldValue, $newValue, $path);
             }
 
             return [
@@ -61,8 +58,7 @@ function compareIter(object $data1, object $data2, array $prevPath = []): array
                 'oldValue' => $oldValue,
                 'newValue' => $newValue,
                 'type' => $type,
-                'children' => $children ?? [],
-                'path' => $path,
+                'children' => $children ?? []
             ];
         },
         array_unique([...array_keys(get_object_vars($data1)), ...array_keys(get_object_vars($data2))])

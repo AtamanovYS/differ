@@ -10,7 +10,7 @@ class DifferTest extends TestCase
 {
     private function getFixturePath(string $filename): string
     {
-        return __DIR__ . DIRECTORY_SEPARATOR . 'fixtures' . DIRECTORY_SEPARATOR . $filename;
+        return __DIR__ . "/fixtures/{$filename}";
     }
 
     /**
@@ -38,6 +38,10 @@ class DifferTest extends TestCase
             json_decode(file_get_contents($this->getFixturePath('diff.json')), false),
             JSON_UNESCAPED_SLASHES
         );
+        $expectedJsonPlain = json_encode(
+            json_decode(file_get_contents($this->getFixturePath('diff.json-plain')), false),
+            JSON_UNESCAPED_SLASHES
+        );
 
         $file1Json = $this->getFixturePath('file1.json');
         $file2Json = $this->getFixturePath('file2.json');
@@ -56,6 +60,10 @@ class DifferTest extends TestCase
             [$file1Json, $file2Json, 'json', $expectedJson],
             [$file1Yaml, $file2Yaml, 'json', $expectedJson],
             [$file1Yaml, $file2Json, 'json', $expectedJson],
+
+            [$file1Json, $file2Json, 'json-plain', $expectedJsonPlain],
+            [$file1Yaml, $file2Yaml, 'json-plain', $expectedJsonPlain],
+            [$file1Yaml, $file2Json, 'json-plain', $expectedJsonPlain],
         ];
     }
 
