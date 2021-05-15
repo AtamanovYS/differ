@@ -52,9 +52,9 @@ function formatValue($value): string
 {
     if (is_null($value)) {
         return 'null';
-    } elseif (is_object($value) || is_array($value)) {
-        return '[complex value]';
-    } else {
-        return var_export($value, true);
     }
+    if (is_object($value) || is_array($value)) {
+        return '[complex value]';
+    }
+    return var_export($value, true);
 }

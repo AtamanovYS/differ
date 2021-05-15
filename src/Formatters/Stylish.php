@@ -18,53 +18,52 @@ function formatIter(array $data, int $indent = 2): array
         $data,
         function ($elem) use ($indent): array {
             $key = $elem['key'];
-            $formattedIndent = formatIndent($indent);
 
             switch ($elem['type']) {
                 case 'nested':
+                    $formattedIndentBegin = formatIndent($indent);
+                    $formattedIndentEnd = formatIndent($indent + 2);
                     $formattedValue = formatIter($elem['children'], $indent + 4);
-                    return ["{$formattedIndent['begin']}  {$key}: {", ...$formattedValue, "{$formattedIndent['end']}}"];
+                    return ["{$formattedIndentBegin}  {$key}: {", ...$formattedValue, "{$formattedIndentEnd}}"];
                 case 'replace':
-                    $oldElem = getElem($key, $elem['oldValue'], $indent, '-');
-                    $newElem = getElem($key, $elem['newValue'], $indent, '+');
+                    $oldElem = formatElement($key, $elem['oldValue'], $indent, '-');
+                    $newElem = formatElement($key, $elem['newValue'], $indent, '+');
                     return [$oldElem, $newElem];
                 case 'add':
-                    $newElem = getElem($key, $elem['newValue'], $indent, '+');
+                    $newElem = formatElement($key, $elem['newValue'], $indent, '+');
                     return [$newElem];
                 case 'remove':
-                    $oldElem = getElem($key, $elem['oldValue'], $indent, '-');
+                    $oldElem = formatElement($key, $elem['oldValue'], $indent, '-');
                     return [$oldElem];
-                default:
-                    $newElem = getElem($key, $elem['newValue'], $indent);
+                case 'unchanged':
+                    $newElem = formatElement($key, $elem['newValue'], $indent);
                     return [$newElem];
+                default:
+                    throw new \Exception("unknown node type: \"{$elem['type']}\"");
             }
         }
     );
 }
 
 /**
- * @param bool|int|string|object|null $value
+ * @param mixed $value
  **/
-function getElem(string $key, $value, int $indent, string $label = ' '): array
+function formatElement(string $key, $value, int $indent, string $label = ' '): array
 {
-    $formattedIndent = formatIndent($indent);
+    $formattedIndentBegin = formatIndent($indent);
     if (is_object($value)) {
+        $formattedIndentEnd = formatIndent($indent + 2);
         $formattedValue = formatValueObject($value, $indent + 4);
-        return ["{$formattedIndent['begin']}{$label} {$key}: {", ...$formattedValue, "{$formattedIndent['end']}}"];
+        return ["{$formattedIndentBegin}{$label} {$key}: {", ...$formattedValue, "{$formattedIndentEnd}}"];
     } else {
         $formattedValue = formatValue($value);
-        return ["{$formattedIndent['begin']}{$label} {$key}: {$formattedValue}"];
+        return ["{$formattedIndentBegin}{$label} {$key}: {$formattedValue}"];
     }
 }
 
-function formatIndent(int $indent): array
+function formatIndent(int $indent): string
 {
-    $beginIndent = str_repeat(' ', $indent);
-    $endIndent = str_repeat(' ', $indent + 2);
-    return [
-        'begin' => $beginIndent,
-        'end'   => $endIndent
-    ];
+    return str_repeat(' ', $indent);
 }
 
 function formatValueObject(object $valueObject, int $indent): array
@@ -72,7 +71,7 @@ function formatValueObject(object $valueObject, int $indent): array
     return flat_map(
         get_object_vars($valueObject),
         function ($value, $key) use ($indent): array {
-            return getElem($key, $value, $indent);
+            return formatElement($key, $value, $indent);
         }
     );
 }
@@ -84,12 +83,13 @@ function formatValue($value): string
 {
     if (is_string($value)) {
         return $value;
-    } elseif (is_null($value)) {
-        return 'null';
-    } elseif (is_bool($value) || is_int($value)) {
-        return var_export($value, true);
-    } else {
-        $type = gettype($value);
-        throw new \Exception("Undefined value format in stylish format for value type {$type}");
     }
+    if (is_null($value)) {
+        return 'null';
+    }
+    if (is_bool($value) || is_int($value)) {
+        return var_export($value, true);
+    }
+    $type = gettype($value);
+    throw new \Exception("Undefined value format in stylish format for value type {$type}");
 }
