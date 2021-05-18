@@ -6,14 +6,14 @@
 [![Test Coverage](https://api.codeclimate.com/v1/badges/7aa6113cad34d1b55339/test_coverage)](https://codeclimate.com/github/AtamanovYS/php-project-lvl2/test_coverage)
 ------
 
-## Description
+## Описание
 
-Differ shows the difference between two data structures.
-Utility features:
-* Support different input formats: yaml (yml) and json
-* Generating a report in various formats: stylish, plain, json, json-flat
+Вычислитель отличий (Differ) – это консольная утилита, показывающая разницу между двумя структурами данных.
+Возможности:
+* Поддержка разных входных форматов: yaml (yml) и json
+* Генерация отчета в различном виде: stylish, plain, json, json-flat
 
-Use `./bin/gendiff -h` to get instructions how to use
+Используйте команду `./bin/gendiff -h`, чтобы получить инструкцию
 ```
 Generate diff
 
@@ -28,22 +28,31 @@ Options:
   --format <fmt>                Report format [default: stylish]
 ```
 
-## Examples
+## Технологии, методики
 
-Comparing flat json files in stylish format
+* Функциональный стиль
+* PHP (7.4), Composer
+* Декларативное описание CLI посредством Docopt
+* Тесты (PHPUnit)
+* Линтер PHP_CodeSniffer (PSR-12), статический анализатор PHPStan
+* GitHub Actions, Code Climate
+
+## Примеры
+
+Сравнение плоских json файлов в формате stylish
 [![asciicast](https://asciinema.org/a/LUGeCy0bxKqb0k20uXPyPSYlq.svg)](https://asciinema.org/a/LUGeCy0bxKqb0k20uXPyPSYlq)
 
-Comparing flat yml files in stylish format
+Сравнение плоских yml файлов в формате stylish
 [![asciicast](https://asciinema.org/a/V70C575Xehd7c8NR75zjt3f30.svg)](https://asciinema.org/a/V70C575Xehd7c8NR75zjt3f30)
 
-Comparing with nested structures in stylish format
+Сравнение файлов с вложенными структурами в формате stylish
 [![asciicast](https://asciinema.org/a/rnZHbKoLQWl3GzONKj9wRnNGv.svg)](https://asciinema.org/a/rnZHbKoLQWl3GzONKj9wRnNGv)
 
-Comparing with nested structures in plain format
+Сравнение файлов с вложенными структурами в формате plain
 [![asciicast](https://asciinema.org/a/h0Yshdmj110wb79t6AUpCTRsn.svg)](https://asciinema.org/a/h0Yshdmj110wb79t6AUpCTRsn)
 
-Comparing with nested structures in json format
+Сравнение файлов с вложенными структурами в формате json
 [![asciicast](https://asciinema.org/a/e9MX75cPadqnb0lsiWAVuZ13o.svg)](https://asciinema.org/a/e9MX75cPadqnb0lsiWAVuZ13o)
 
-Comparing with nested structures in json-flat format
+Сравнение файлов с вложенными структурами в формате json-flat
 [![asciicast](https://asciinema.org/a/raocXqyLxNBM4399GzbOCBtSy.svg)](https://asciinema.org/a/raocXqyLxNBM4399GzbOCBtSy)
