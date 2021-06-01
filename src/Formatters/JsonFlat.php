@@ -6,9 +6,7 @@ use function _\flatMapDepth;
 
 function format(array $data): string
 {
-    // Приведение к типу string, чтобы тесты проходили
-    // Здесь невозможно ситуации, чтобы нельзя было привести к json
-    return (string) json_encode(formatIter($data));
+    return json_encode(formatIter($data));
 }
 
 function formatIter(array $data, array $prevPath = []): array

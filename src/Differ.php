@@ -12,7 +12,7 @@ function genDiff(string $pathToFile1, string $pathToFile2, string $format = 'sty
     $fileData2 = getFileData($pathToFile2);
     $processedData1 = parse($fileData1['content'], $fileData1['extension']);
     $processedData2 = parse($fileData2['content'], $fileData2['extension']);
-    $comparableData = compare($processedData1, $processedData2);
+    $comparableData = buildDiff($processedData1, $processedData2);
     return format($comparableData, $format);
 }
 
@@ -28,12 +28,7 @@ function getFileData(string $pathToFile): array
     ];
 }
 
-function compare(object $data1, object $data2): array
-{
-    return compareIter($data1, $data2);
-}
-
-function compareIter(object $data1, object $data2): array
+function buildDiff(object $data1, object $data2): array
 {
     $comparableData = array_map(
         function (string $key) use ($data1, $data2): array {
@@ -42,7 +37,7 @@ function compareIter(object $data1, object $data2): array
 
             if (is_object($newValue) && is_object($oldValue)) {
                 $type = 'nested';
-                $children = compareIter($oldValue, $newValue);
+                $children = buildDiff($oldValue, $newValue);
             } elseif (!property_exists($data2, $key)) {
                 $type = 'remove';
             } elseif (!property_exists($data1, $key)) {

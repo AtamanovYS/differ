@@ -5,6 +5,7 @@ namespace Differ\Tests;
 use PHPUnit\Framework\TestCase;
 
 use function Differ\Differ\genDiff;
+use function Funct\Strings\startsWith;
 
 class DifferTest extends TestCase
 {
@@ -18,7 +19,11 @@ class DifferTest extends TestCase
      */
     public function testGenDiff($file1, $file2, $format, $exptected): void
     {
-        $this->assertEquals($exptected, genDiff($file1, $file2, $format));
+        $actual = genDiff($file1, $file2, $format);
+        $this->assertEquals(
+            $exptected,
+            startsWith($format, 'json') ? json_decode($actual, false) : $actual
+        );
     }
 
     /**
@@ -34,12 +39,8 @@ class DifferTest extends TestCase
     {
         $expectedStylish = file_get_contents($this->getFixturePath('diff.stylish'));
         $expectedPlain = file_get_contents($this->getFixturePath('diff.plain'));
-        $expectedJson = json_encode(
-            json_decode(file_get_contents($this->getFixturePath('diff.json')), false)
-        );
-        $expectedJsonFlat = json_encode(
-            json_decode(file_get_contents($this->getFixturePath('diff.flat.json')), false)
-        );
+        $expectedJson = json_decode(file_get_contents($this->getFixturePath('diff.json')), false);
+        $expectedJsonFlat = json_decode(file_get_contents($this->getFixturePath('diff.flat.json')), false);
 
         $file1Json = $this->getFixturePath('file1.json');
         $file2Json = $this->getFixturePath('file2.json');

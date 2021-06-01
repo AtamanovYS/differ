@@ -12,7 +12,13 @@ parameters:
   reportUnmatchedIgnoredErrors: false
 
   ignoreErrors:
-   - '#Variable property access on object#'
+    - '#Variable property access on object#'
+    -
+      message: '#should return string but returns string|false#'
+      path: src/Formatters/Json.php
+    -
+      message: '#should return string but returns string|false#'
+      path: src/Formatters/JsonFlat.php
 
   phpstanFunctionalProgramming:
     disallowThrow: false
