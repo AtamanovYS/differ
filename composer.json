@@ -44,7 +44,7 @@
         "phpstan": "phpstan analyse -c ./phpstan.neon",
         "test": "phpunit tests",
         "test-coverage": [
-            "@putenv XDEBUG_MODE=coverage",
+            "@putenv XDEBUG_MODE=coverage", 
             "phpunit --coverage-clover build/logs/clover.xml --coverage-text --coverage-html coverage tests"
         ]
     }
