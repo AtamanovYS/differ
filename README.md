@@ -2,8 +2,8 @@
 
 [![Actions Status](https://github.com/AtamanovYS/differ/workflows/hexlet-check/badge.svg)](https://github.com/AtamanovYS/differ/actions)
 [![Github Actions Status](https://github.com/AtamanovYS/differ/workflows/PHP%20CI/badge.svg)](https://github.com/AtamanovYS/differ/actions)
-[![Maintainability](https://api.codeclimate.com/v1/badges/7aa6113cad34d1b55339/maintainability)](https://codeclimate.com/github/AtamanovYS/differ/maintainability)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/7aa6113cad34d1b55339/test_coverage)](https://codeclimate.com/github/AtamanovYS/differ/test_coverage)
+[![Maintainability](https://api.codeclimate.com/v1/badges/58669b23013429bec939/maintainability)](https://codeclimate.com/github/AtamanovYS/differ/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/58669b23013429bec939/test_coverage)](https://codeclimate.com/github/AtamanovYS/differ/test_coverage)
 ------
 
 ## Описание
